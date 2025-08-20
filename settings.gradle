@@ -1,4 +1,4 @@
-rootProject.name = 'commons'
+rootProject.name = 'dy-commons'
 
 include 'web-security'
 
