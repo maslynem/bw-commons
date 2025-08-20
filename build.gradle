@@ -13,8 +13,8 @@ allprojects {
             name = "github"
             url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
             credentials {
-                username = project.findProperty("githubUsername") ?: ""
-                password = project.findProperty("githubToken") ?: ""
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("githubUsername") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
             }
         }
     }
@@ -38,14 +38,13 @@ subprojects {
                 name = "github"
                 url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
                 credentials {
-                    username = project.findProperty("githubUsername") ?: ""
-                    password = project.findProperty("githubToken") ?: ""
+                    username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("githubUsername") ?: ""
+                    password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
                 }
             }
         }
     }
 }
 
-// Отключаем публикацию для корневого проекта
 tasks.withType(PublishToMavenRepository).configureEach { it.enabled = false }
 tasks.withType(PublishToMavenLocal).configureEach { it.enabled = false }
