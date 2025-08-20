@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+allprojects {
+    group = 'ru.digitalyard.commons'
+    version = '1.0.0-SNAPSHOT'
+    repositories {
+        mavenCentral()
+        maven {
+            name = "github"
+            url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
+            credentials {
+                username = project.findProperty("githubUsername") ?: ""
+                password = project.findProperty("githubToken") ?: ""
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        sourceCompatibility = '17'
+        targetCompatibility = '17'
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "github"
+                url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
+                credentials {
+                    username = project.findProperty("githubUsername") ?: ""
+                    password = project.findProperty("githubToken") ?: ""
+                }
+            }
+        }
+    }
+}
+
+// Отключаем публикацию для корневого проекта
+tasks.withType(PublishToMavenRepository).configureEach { it.enabled = false }
+tasks.withType(PublishToMavenLocal).configureEach { it.enabled = false }

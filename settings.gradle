@@ -1,0 +1,5 @@
+rootProject.name = 'commons'
+
+include 'web-security'
+
+project(':web-security').name = 'web-security'
