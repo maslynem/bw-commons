@@ -6,7 +6,6 @@ plugins {
 
 allprojects {
     group = 'ru.digitalyard.commons'
-    version = '1.0.0-SNAPSHOT'
     repositories {
         mavenCentral()
         maven {
