@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 allprojects {
@@ -17,6 +17,7 @@ allprojects {
                 password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
             }
         }
+        mavenLocal()
     }
 }
 
@@ -32,7 +33,26 @@ subprojects {
         withSourcesJar()
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.0"
+        }
+    }
+
     publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
+            }
+        }
         repositories {
             maven {
                 name = "github"

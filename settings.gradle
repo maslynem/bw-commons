@@ -1,5 +1,3 @@
 rootProject.name = 'dy-commons'
 
-include 'web-security'
-
-project(':web-security').name = 'web-security'
+include 'rest-commons'
