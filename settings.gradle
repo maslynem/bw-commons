@@ -1,5 +1,3 @@
 rootProject.name = 'dy-commons'
 
 include 'rest-commons'
-
-project(':rest-commons').name = 'rest-commons'
