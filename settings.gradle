@@ -1,4 +1,4 @@
 rootProject.name = 'dy-commons'
 
-include 'rest-commons'
-include 'web-security'
+include 'rest-commons-starter'
+include 'web-security-starter'
