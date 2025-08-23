@@ -5,5 +5,7 @@ public enum Constants {
     FIRST_NAME,
     MIDDLE_NAME,
     LAST_NAME,
+    LOCKED,
+    DELETED,
     USER_RIGHTS;
 }

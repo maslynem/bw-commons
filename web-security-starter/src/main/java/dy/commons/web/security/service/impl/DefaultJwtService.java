@@ -37,9 +37,9 @@ public class DefaultJwtService implements JwtService {
             return claims;
         } catch (ExpiredJwtException e) {
             Date expiredAt = e.getClaims().getExpiration();
-            throw new TokenExpiredException(token, expiredAt.toInstant());
+            throw new TokenExpiredException(expiredAt.toInstant());
         } catch (JwtException e) {
-            throw new InvalidTokenException(token, e);
+            throw new InvalidTokenException(e.getMessage());
         }
     }
 }

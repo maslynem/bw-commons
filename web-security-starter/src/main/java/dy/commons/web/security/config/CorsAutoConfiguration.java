@@ -2,6 +2,7 @@ package dy.commons.web.security.config;
 
 import dy.commons.web.security.config.properties.WebSecurityProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ public class CorsAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "dy.web-security.cors", name = "enabled", havingValue = "true")
     public CorsConfigurationSource corsConfigurationSource(CorsConfiguration corsConfiguration) {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

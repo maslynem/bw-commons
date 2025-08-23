@@ -9,18 +9,11 @@ import java.util.UUID;
  * Исключение для заблокированных пользователей.
  */
 public class BlockedUserException extends SecurityException {
-    public static final String USER_ID = "userId";
+    public static final String USER_LOGIN = "userLogin";
 
-    public BlockedUserException(UUID userId) {
+    public BlockedUserException(String login) {
         super(CommonErrorCode.BLOCKED_USER,
-                Map.of(USER_ID, userId));
+                Map.of(USER_LOGIN, login));
     }
 
-    public BlockedUserException(Map<String, Object> details) {
-        super(CommonErrorCode.BLOCKED_USER, details);
-    }
-
-    public BlockedUserException(Map<String, Object> details, Throwable throwable) {
-        super(CommonErrorCode.BLOCKED_USER, details, throwable);
-    }
 }

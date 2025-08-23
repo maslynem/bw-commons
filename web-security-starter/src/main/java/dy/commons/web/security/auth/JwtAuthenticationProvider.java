@@ -26,16 +26,18 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         try {
             User user = userProvider.getUser(jwtAuthenticationToken);
             if (user == null) {
-                throw new InvalidTokenException(jwtAuthenticationToken.getJwtToken());
+                throw new InvalidTokenException("User not found");
             }
-            if (user.isAccountNonLocked()) {
-                throw new BlockedUserException(user.getId());
+            if (user.isAccountLocked()) {
+                throw new BlockedUserException(user.getLogin());
             }
             if (user.isDeleted()) {
                 throw new UserDeletedOrDoesNotExistException(user.getLogin());
             }
 
             return new JwtAuthenticationToken(jwtAuthenticationToken.getJwtToken(), user);
+        } catch (AuthenticationException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new InternalServerErrorException(ex);
         }

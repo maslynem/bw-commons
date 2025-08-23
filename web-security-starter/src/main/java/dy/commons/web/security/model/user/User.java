@@ -24,13 +24,9 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String middleName;
-    private String description;
-    private String email;
-    private String phone;
     private boolean locked;
     private boolean deleted;
     private Set<Role> roles;
-    private Instant lastAccessDate;
 
     @JsonIgnore
     @Override
@@ -60,6 +56,10 @@ public class User implements UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         return !this.locked;
+    }
+    @JsonIgnore
+    public boolean isAccountLocked() {
+        return this.locked;
     }
 
     @JsonIgnore

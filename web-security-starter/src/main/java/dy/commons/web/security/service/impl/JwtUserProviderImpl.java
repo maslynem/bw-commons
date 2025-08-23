@@ -1,5 +1,6 @@
 package dy.commons.web.security.service.impl;
 
+import dy.commons.web.security.exception.InvalidTokenException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
 import dy.commons.web.security.model.user.Constants;
 import dy.commons.web.security.model.user.User;
@@ -28,11 +29,11 @@ public class JwtUserProviderImpl implements JwtUserProvider {
 
         String login = claims.get(Constants.LOGIN.name(), String.class);
 
-        log.debug("Username extracted from JWT: {}", login);
+        log.debug("Login extracted from JWT: {}", login);
 
         if (!StringUtils.hasText(login)) {
-            log.debug("Username is empty");
-            throw new RuntimeException(login); // TODO throw UsernameNotFoundException
+            log.debug("Login is empty");
+            throw new InvalidTokenException("Login is empty");
         }
 
         return User.builder()
@@ -42,6 +43,8 @@ public class JwtUserProviderImpl implements JwtUserProvider {
                 .middleName(claims.get(Constants.MIDDLE_NAME.name(), String.class))
                 .lastName(claims.get(Constants.LAST_NAME.name(), String.class))
                 .roles(claims.get(Constants.USER_RIGHTS.name(), Set.class))
+                .locked(claims.get(Constants.LOCKED.name(), Boolean.class))
+                .deleted(claims.get(Constants.DELETED.name(), Boolean.class))
                 .build();
     }
 }

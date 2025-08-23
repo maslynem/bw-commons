@@ -15,11 +15,4 @@ public class UserDeletedOrDoesNotExistException extends SecurityException {
                 Map.of(USER_LOGIN, login));
     }
 
-    public UserDeletedOrDoesNotExistException(Map<String, Object> details) {
-        super(CommonErrorCode.USER_DELETED_OR_DOES_NOT_EXIST, details);
-    }
-
-    public UserDeletedOrDoesNotExistException(Map<String, Object> details, Throwable throwable) {
-        super(CommonErrorCode.USER_DELETED_OR_DOES_NOT_EXIST, details, throwable);
-    }
 }
