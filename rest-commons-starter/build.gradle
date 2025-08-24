@@ -15,11 +15,3 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 }
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'rest-commons-starter'
-        }
-    }
-}

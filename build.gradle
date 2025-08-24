@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-plugins.withType(CheckstylePlugin) {
+plugins.withType(CheckstylePlugin).configureEach {
     checkstyle {
         skip = true
     }
@@ -24,6 +24,13 @@ allprojects {
             }
         }
         mavenLocal()
+    }
+    test {
+        useJUnitPlatform()
+
+    }
+    tasks.withType(Javadoc).configureEach {
+        enabled = false
     }
 }
 
@@ -52,16 +59,17 @@ subprojects {
 
     publishing {
         publications {
-            mavenJava(MavenPublication) {
-                from components.java
+            create("mavenJava", MavenPublication) {
+                from(components.java)
                 versionMapping {
-                    usage('java-api') {
-                        fromResolutionOf('runtimeClasspath')
+                    usage("java-api") {
+                        fromResolutionOf("runtimeClasspath")
                     }
-                    usage('java-runtime') {
+                    usage("java-runtime") {
                         fromResolutionResult()
                     }
                 }
+                artifactId = project.name
             }
         }
         repositories {
@@ -73,12 +81,6 @@ subprojects {
                     password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
                 }
             }
-        }
-    }
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
         }
     }
 }

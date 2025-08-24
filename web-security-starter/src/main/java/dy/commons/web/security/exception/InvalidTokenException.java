@@ -4,9 +4,7 @@ import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
 
 import java.util.Map;
 
-/**
- * Исключение для недействительных токенов.
- */
+
 public class InvalidTokenException extends SecurityException {
     public static final String REASON = "reason";
 

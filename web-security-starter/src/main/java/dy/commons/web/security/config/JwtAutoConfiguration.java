@@ -1,18 +1,19 @@
 package dy.commons.web.security.config;
 
+import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
+import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dy.commons.web.security.auth.ForbiddenEntryPoint;
 import dy.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import dy.commons.web.security.auth.JwtAuthenticationProvider;
 import dy.commons.web.security.config.properties.AuthProperties;
 import dy.commons.web.security.service.JwtService;
+import dy.commons.web.security.service.JwtUserProvider;
 import dy.commons.web.security.service.PubKeyLoader;
 import dy.commons.web.security.service.impl.DefaultJwtService;
-import dy.commons.web.security.service.impl.X509PubKeyLoader;
-import dy.commons.web.security.service.JwtUserProvider;
 import dy.commons.web.security.service.impl.JwtUserProviderImpl;
-import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
-import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
+import dy.commons.web.security.service.impl.X509PubKeyLoader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 public class JwtAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public PubKeyLoader pubKeyLoader(ResourceLoader resourceLoader) {
         return new X509PubKeyLoader(resourceLoader);
     }

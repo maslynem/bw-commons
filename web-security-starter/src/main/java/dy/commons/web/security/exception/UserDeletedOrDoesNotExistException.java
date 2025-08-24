@@ -4,9 +4,7 @@ import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
 
 import java.util.Map;
 
-/**
- * Исключение для удаленных или несуществующих пользователей.
- */
+
 public class UserDeletedOrDoesNotExistException extends SecurityException {
     public static final String USER_LOGIN = "userLogin";
 

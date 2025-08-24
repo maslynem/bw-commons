@@ -1,12 +1,9 @@
 package dy.commons.web.security.config;
 
-import dy.commons.web.security.auth.ForbiddenEntryPoint;
 import dy.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import dy.commons.web.security.auth.JwtAuthenticationTokenFilter;
-import dy.commons.web.security.config.properties.AuthProperties;
 import dy.commons.web.security.config.properties.WebSecurityProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -26,10 +24,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class SecurityAutoConfiguration {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final ForbiddenEntryPoint forbiddenEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final CorsConfigurationSource corsConfigurationSource;
     private final WebSecurityProperties webSecurityProperties;
@@ -73,7 +71,7 @@ public class WebSecurityConfig {
                 // 7. Настройка обработки исключений
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(forbiddenEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
 
                 // 8. Настройка security headers (после исключений)

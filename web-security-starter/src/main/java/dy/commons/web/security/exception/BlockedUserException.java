@@ -3,11 +3,8 @@ package dy.commons.web.security.exception;
 import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
 
 import java.util.Map;
-import java.util.UUID;
 
-/**
- * Исключение для заблокированных пользователей.
- */
+
 public class BlockedUserException extends SecurityException {
     public static final String USER_LOGIN = "userLogin";
 

@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.Instant;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -26,7 +25,7 @@ public class User implements UserDetails {
     private String middleName;
     private boolean locked;
     private boolean deleted;
-    private Set<Role> roles;
+    private List<Role> roles;
 
     @JsonIgnore
     @Override

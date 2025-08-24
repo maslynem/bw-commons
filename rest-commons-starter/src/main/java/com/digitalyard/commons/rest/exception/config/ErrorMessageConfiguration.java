@@ -1,6 +1,5 @@
 package com.digitalyard.commons.rest.exception.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
 import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.digitalyard.commons.rest.exception.handler.logger.Slf4jApiErrorLogger;
@@ -8,6 +7,7 @@ import com.digitalyard.commons.rest.exception.resolver.ErrorMessageResolver;
 import com.digitalyard.commons.rest.exception.resolver.SpElErrorMessageResolver;
 import com.digitalyard.commons.rest.exception.resolver.basename.scanner.MessageBasenameScanner;
 import com.digitalyard.commons.rest.exception.resolver.basename.scanner.impl.ClasspathMessageBasenameScanner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.MessageSource;
@@ -42,7 +42,7 @@ public class ErrorMessageConfiguration {
     }
 
     @Bean
-    public MessageSource errorMessageSource(MessageBasenameScanner basenameScanner,
+    public MessageSource messageSource(MessageBasenameScanner basenameScanner,
                                             ErrorMessageProperties properties) {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
