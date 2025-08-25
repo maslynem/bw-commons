@@ -1,8 +1,8 @@
 package dy.commons.web.security.service.impl;
 
 import dy.commons.web.security.config.properties.AuthProperties;
-import dy.commons.web.security.exception.TokenExpiredException;
-import dy.commons.web.security.exception.InvalidTokenException;
+import dy.commons.web.security.exception.token.InvalidTokenException;
+import dy.commons.web.security.exception.token.TokenExpiredException;
 import dy.commons.web.security.service.JwtService;
 import dy.commons.web.security.service.PubKeyLoader;
 import io.jsonwebtoken.Claims;

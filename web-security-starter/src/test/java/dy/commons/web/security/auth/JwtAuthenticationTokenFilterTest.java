@@ -1,5 +1,10 @@
 package dy.commons.web.security.auth;
 
+import com.digitalyard.commons.rest.exception.model.ApiError;
+import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
+import dy.commons.web.security.exception.token.InvalidTokenException;
+import dy.commons.web.security.exception.token.TokenExpiredException;
+import dy.commons.web.security.exception.user.UserException;
 import dy.commons.web.security.utils.ClaimsUtils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -23,9 +28,9 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(
         classes = {
@@ -42,7 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureWebMvc
 @Tag("integration")
 public class JwtAuthenticationTokenFilterTest {
-
+    private final String CODE = ApiError.Fields.code;
+    private final String DETAILS = ApiError.Fields.details;
+    
     @Autowired
     private MockMvc mockMvc;
 
@@ -84,7 +91,8 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"TOKEN_EXPIRED\"}", false));
+                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.TOKEN_EXPIRED.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, TokenExpiredException.EXPIRED_AT)).exists());
     }
 
     @Test
@@ -92,7 +100,9 @@ public class JwtAuthenticationTokenFilterTest {
         mockMvc.perform(get(TestConfig.SECURE_URL))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"UNAUTHORIZED\"}", false));
+                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.UNAUTHORIZED.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, CommonErrorCode.UNAUTHORIZED.name())).exists());
+
     }
 
     @Test
@@ -106,7 +116,9 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"INVALID_TOKEN\"}", false));
+                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.INVALID_TOKEN.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, InvalidTokenException.REASON)).exists());
+
     }
 
     @Test
@@ -119,7 +131,9 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"BLOCKED_USER\"}", false));
+                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.BLOCKED_USER.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserException.USER_LOGIN)).exists());
+
     }
 
     @Test
@@ -132,7 +146,8 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"USER_DELETED_OR_DOES_NOT_EXIST\"}", false));
+                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.USER_DELETED_OR_DOES_NOT_EXIST.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserException.USER_LOGIN)).exists());
     }
 
     @Test
@@ -145,8 +160,10 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"code\":\"FORBIDDEN\"}", false));
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, ForbiddenEntryPoint.USER_LOGIN)).exists())
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, ForbiddenEntryPoint.URL)).exists());
     }
+
 
     private String buildToken(PrivateKey privateKey, Consumer<JwtBuilder> consumer) {
         JwtBuilder builder = Jwts.builder();

@@ -1,12 +1,12 @@
 package dy.commons.web.security.auth;
 
-import dy.commons.web.security.exception.BlockedUserException;
-import dy.commons.web.security.exception.InvalidTokenException;
-import dy.commons.web.security.exception.UserDeletedOrDoesNotExistException;
+import com.digitalyard.commons.rest.exception.exception.internal.InternalServerErrorException;
+import dy.commons.web.security.exception.token.InvalidTokenException;
+import dy.commons.web.security.exception.user.BlockedUserException;
+import dy.commons.web.security.exception.user.UserDeletedOrDoesNotExistException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
 import dy.commons.web.security.model.user.User;
 import dy.commons.web.security.service.JwtUserProvider;
-import com.digitalyard.commons.rest.exception.exception.internal.InternalServerErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;

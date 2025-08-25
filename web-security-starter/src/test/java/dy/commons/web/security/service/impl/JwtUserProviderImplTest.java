@@ -1,6 +1,6 @@
 package dy.commons.web.security.service.impl;
 
-import dy.commons.web.security.exception.InvalidTokenException;
+import dy.commons.web.security.exception.token.InvalidTokenException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
 import dy.commons.web.security.model.user.Constants;
 import dy.commons.web.security.model.user.Role;

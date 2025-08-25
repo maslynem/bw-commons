@@ -1,6 +1,6 @@
 package dy.commons.web.security.service.impl;
 
-import dy.commons.web.security.exception.InvalidTokenException;
+import dy.commons.web.security.exception.token.InvalidTokenException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
 import dy.commons.web.security.model.user.Constants;
 import dy.commons.web.security.model.user.Role;
@@ -29,6 +29,8 @@ public class JwtUserProviderImpl implements JwtUserProvider {
 
         UUID id = UUID.fromString(getRequiredClaim(claims, Claims.SUBJECT, String.class));
         String login = getRequiredClaim(claims, Constants.LOGIN.name(), String.class);
+        // TODO: Как проверить, что пользователь не был заблокирован после выдачи jwt-токена.
+
         String firstName = getRequiredClaim(claims, Constants.FIRST_NAME.name(), String.class);
         String middleName = getRequiredClaim(claims, Constants.MIDDLE_NAME.name(), String.class);
         String lastName = getRequiredClaim(claims, Constants.LAST_NAME.name(), String.class);
