@@ -1,10 +1,12 @@
 package dy.commons.web.security.auth;
 
 import com.digitalyard.commons.rest.exception.model.ApiError;
-import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
+import dy.commons.web.security.config.JwtAutoConfiguration;
+import dy.commons.web.security.config.SecurityAutoConfiguration;
 import dy.commons.web.security.exception.token.InvalidTokenException;
 import dy.commons.web.security.exception.token.TokenExpiredException;
 import dy.commons.web.security.exception.user.UserException;
+import dy.commons.web.security.model.errorCode.SecurityErrorCode;
 import dy.commons.web.security.utils.ClaimsUtils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -35,8 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(
         classes = {
                 TestConfig.class,
-                dy.commons.web.security.config.SecurityAutoConfiguration.class,
-                dy.commons.web.security.config.JwtAutoConfiguration.class
+                SecurityAutoConfiguration.class,
+                JwtAutoConfiguration.class
         },
         properties = {
                 "dy.web-security.permissions[0]=/test/unsecure",
@@ -91,7 +93,7 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.TOKEN_EXPIRED.name()))
+                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.TOKEN_EXPIRED.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, TokenExpiredException.EXPIRED_AT)).exists());
     }
 
@@ -100,8 +102,8 @@ public class JwtAuthenticationTokenFilterTest {
         mockMvc.perform(get(TestConfig.SECURE_URL))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.UNAUTHORIZED.name()))
-                .andExpect(jsonPath(format("$.%s.%s", DETAILS, CommonErrorCode.UNAUTHORIZED.name())).exists());
+                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.UNAUTHORIZED.name()))
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, SecurityErrorCode.UNAUTHORIZED.name())).exists());
 
     }
 
@@ -116,7 +118,7 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.INVALID_TOKEN.name()))
+                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.INVALID_TOKEN.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, InvalidTokenException.REASON)).exists());
 
     }
@@ -131,7 +133,7 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.BLOCKED_USER.name()))
+                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.BLOCKED_USER.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserException.USER_LOGIN)).exists());
 
     }
@@ -146,7 +148,7 @@ public class JwtAuthenticationTokenFilterTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.USER_DELETED_OR_DOES_NOT_EXIST.name()))
+                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.USER_DELETED_OR_DOES_NOT_EXIST.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserException.USER_LOGIN)).exists());
     }
 

@@ -1,7 +1,6 @@
 package dy.commons.web.security.config;
 
 import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
-import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dy.commons.web.security.auth.ForbiddenEntryPoint;
 import dy.commons.web.security.auth.JwtAuthenticationEntryPoint;
@@ -48,13 +47,13 @@ public class JwtAutoConfiguration {
     }
 
     @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint(ObjectMapper objectMapper, ApiErrorFactory apiErrorFactory, ApiErrorLogger apiErrorLogger) {
-        return new JwtAuthenticationEntryPoint(apiErrorFactory, apiErrorLogger, objectMapper);
+    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint(ObjectMapper objectMapper, ApiErrorFactory apiErrorFactory) {
+        return new JwtAuthenticationEntryPoint(apiErrorFactory, objectMapper);
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler(ObjectMapper objectMapper, ApiErrorFactory apiErrorFactory, ApiErrorLogger apiErrorLogger) {
-        return new ForbiddenEntryPoint(apiErrorFactory, apiErrorLogger, objectMapper);
+    public AccessDeniedHandler accessDeniedHandler(ObjectMapper objectMapper, ApiErrorFactory apiErrorFactory) {
+        return new ForbiddenEntryPoint(apiErrorFactory, objectMapper);
     }
 
 }

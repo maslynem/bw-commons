@@ -1,11 +1,10 @@
 package dy.commons.web.security.auth;
 
-import com.digitalyard.commons.rest.exception.exception.internal.InternalServerErrorException;
 import dy.commons.web.security.exception.token.InvalidTokenException;
 import dy.commons.web.security.exception.user.BlockedUserException;
 import dy.commons.web.security.exception.user.UserDeletedOrDoesNotExistException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
-import dy.commons.web.security.model.user.User;
+import dy.commons.web.security.model.user.AuthenticatedUser;
 import dy.commons.web.security.service.JwtUserProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,24 +22,18 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             throws AuthenticationException {
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
 
-        try {
-            User user = userProvider.getUser(jwtAuthenticationToken);
-            if (user == null) {
-                throw new InvalidTokenException("User not found");
-            }
-            if (user.isAccountLocked()) {
-                throw new BlockedUserException(user.getLogin());
-            }
-            if (user.isDeleted()) {
-                throw new UserDeletedOrDoesNotExistException(user.getLogin());
-            }
-
-            return new JwtAuthenticationToken(jwtAuthenticationToken.getJwtToken(), user);
-        } catch (AuthenticationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new InternalServerErrorException(ex);
+        AuthenticatedUser authenticatedUser = userProvider.getUser(jwtAuthenticationToken);
+        if (authenticatedUser == null) {
+            throw new InvalidTokenException("User not found");
         }
+        if (authenticatedUser.isAccountLocked()) {
+            throw new BlockedUserException(authenticatedUser.getLogin());
+        }
+        if (authenticatedUser.isDeleted()) {
+            throw new UserDeletedOrDoesNotExistException(authenticatedUser.getLogin());
+        }
+
+        return new JwtAuthenticationToken(jwtAuthenticationToken.getJwtToken(), authenticatedUser);
     }
 
     @Override

@@ -1,3 +1,3 @@
-com.digitalyard.commons.rest.exception.config.ErrorMessageConfiguration
+com.digitalyard.commons.rest.exception.config.ApiErrorConfiguration
 com.digitalyard.commons.rest.exception.config.ExceptionHandlerConfiguration
 com.digitalyard.commons.rest.jackson.ObjectMapperConfiguration

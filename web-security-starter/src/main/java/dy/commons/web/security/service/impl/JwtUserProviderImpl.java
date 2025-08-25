@@ -2,9 +2,9 @@ package dy.commons.web.security.service.impl;
 
 import dy.commons.web.security.exception.token.InvalidTokenException;
 import dy.commons.web.security.model.JwtAuthenticationToken;
+import dy.commons.web.security.model.user.AuthenticatedUser;
 import dy.commons.web.security.model.user.Constants;
 import dy.commons.web.security.model.user.Role;
-import dy.commons.web.security.model.user.User;
 import dy.commons.web.security.service.JwtService;
 import dy.commons.web.security.service.JwtUserProvider;
 import io.jsonwebtoken.Claims;
@@ -21,7 +21,7 @@ public class JwtUserProviderImpl implements JwtUserProvider {
     private final JwtService jwtService;
 
     @Override
-    public User getUser(JwtAuthenticationToken jwtAuthenticationToken) {
+    public AuthenticatedUser getUser(JwtAuthenticationToken jwtAuthenticationToken) {
         log.debug("Validating JWT: {}", jwtAuthenticationToken.getJwtToken());
 
         Claims claims = jwtService.validateAccessToken(jwtAuthenticationToken.getJwtToken());
@@ -42,7 +42,7 @@ public class JwtUserProviderImpl implements JwtUserProvider {
         Boolean locked = getRequiredClaim(claims, Constants.LOCKED.name(), Boolean.class);
         Boolean deleted = getRequiredClaim(claims, Constants.DELETED.name(), Boolean.class);
 
-        return User.builder()
+        return AuthenticatedUser.builder()
                 .id(id)
                 .login(login)
                 .firstName(firstName)

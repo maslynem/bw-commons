@@ -8,12 +8,7 @@ import java.util.Map;
 /**
  * Исключение для внутренних ошибок сервера.
  */
-public class InternalServerErrorException extends AbstractApiException {
-    public static final String THROWABLE = "throwable";
-
-    public InternalServerErrorException(Throwable throwable) {
-        super(CommonErrorCode.INTERNAL_ERROR, Map.of(THROWABLE, throwable));
-    }
+public abstract class InternalServerErrorException extends AbstractApiException {
 
     public InternalServerErrorException(CommonErrorCode commonErrorCode, Map<String, Object> details) {
         super(commonErrorCode, details);

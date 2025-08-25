@@ -1,14 +1,12 @@
 package dy.commons.web.security.auth;
 
 import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
-import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dy.commons.web.security.config.properties.WebSecurityProperties;
 import dy.commons.web.security.service.PubKeyLoader;
-import lombok.extern.slf4j.Slf4j;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +20,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 @TestConfiguration
-@Slf4j
 public class TestConfig {
     public static final String SECURE_URL = "/test/secure";
     public static final String UNSECURE_URL = "/test/unsecure";
@@ -40,11 +37,6 @@ public class TestConfig {
     @Bean
     public ApiErrorFactory apiErrorFactory() {
         return new ApiErrorFactory();
-    }
-
-    @Bean
-    public ApiErrorLogger apiErrorLogger() {
-        return apiError -> log.debug(apiError.toString());
     }
 
     @Bean

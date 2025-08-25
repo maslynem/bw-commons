@@ -1,12 +1,11 @@
 package dy.commons.web.security.auth;
 
 import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
-import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.digitalyard.commons.rest.exception.model.ApiError;
-import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
 import com.digitalyard.commons.rest.exception.model.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dy.commons.web.security.exception.SecurityException;
+import dy.commons.web.security.model.errorCode.SecurityErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,51 +24,47 @@ import java.util.Map;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ApiErrorFactory apiErrorFactory;
-    private final ApiErrorLogger apiErrorLogger;
     private final ObjectMapper objectMapper;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        log.debug("Authentication failed: {}", authException.getMessage());
-
         if (authException instanceof SecurityException) {
-            handleSecurityException((SecurityException) authException, response);
+            handleSecurityException(request, response, (SecurityException) authException);
         } else {
-            handleGenericAuthenticationException(authException, response);
+            handleGenericAuthenticationException(request, response, authException);
         }
     }
 
-    private void handleSecurityException(SecurityException secEx, HttpServletResponse response) throws IOException {
+    private void handleSecurityException(HttpServletRequest request, HttpServletResponse response,
+                                         SecurityException secEx) throws IOException {
         ErrorCode errorCode = secEx.getErrorCode();
         Map<String, Object> details = secEx.getDetails();
 
         HttpStatus status = mapStatusForErrorCode(errorCode);
-        ApiError apiError = buildAndLogApiError(errorCode, status, details);
+        ApiError apiError = buildApiError(errorCode, status, details);
         writeApiErrorResponse(response, status, apiError);
     }
 
-    private void handleGenericAuthenticationException(AuthenticationException authException,
-                                                      HttpServletResponse response) throws IOException {
+    private void handleGenericAuthenticationException(HttpServletRequest request, HttpServletResponse response,
+                                                      AuthenticationException authException) throws IOException {
         Map<String, Object> details = Collections.singletonMap(
-                CommonErrorCode.UNAUTHORIZED.name(),
+                SecurityErrorCode.UNAUTHORIZED.name(),
                 authException.getMessage()
         );
-        ApiError apiError = buildAndLogApiError(CommonErrorCode.UNAUTHORIZED, HttpStatus.UNAUTHORIZED, details);
+        ApiError apiError = buildApiError(SecurityErrorCode.UNAUTHORIZED, HttpStatus.UNAUTHORIZED, details);
         writeApiErrorResponse(response, HttpStatus.UNAUTHORIZED, apiError);
     }
 
     private HttpStatus mapStatusForErrorCode(ErrorCode errorCode) {
-        if (errorCode == CommonErrorCode.BLOCKED_USER) {
+        if (errorCode == SecurityErrorCode.BLOCKED_USER) {
             return HttpStatus.FORBIDDEN;
         }
         return HttpStatus.UNAUTHORIZED;
     }
 
-    private ApiError buildAndLogApiError(ErrorCode errorCode, HttpStatus status, Map<String, Object> details) {
-        ApiError apiError = apiErrorFactory.create(errorCode, status, details);
-        apiErrorLogger.logError(apiError);
-        return apiError;
+    private ApiError buildApiError(ErrorCode errorCode, HttpStatus status, Map<String, Object> details) {
+        return apiErrorFactory.create(errorCode, status, details);
     }
 
     private void writeApiErrorResponse(HttpServletResponse response, HttpStatus status, ApiError apiError) throws IOException {

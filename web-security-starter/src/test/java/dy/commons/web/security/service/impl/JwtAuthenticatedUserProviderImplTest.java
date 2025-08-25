@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class JwtUserProviderImplTest {
+class JwtAuthenticatedUserProviderImplTest {
     private final JwtService jwtService = Mockito.mock(JwtService.class);
     private final JwtUserProviderImpl provider = new JwtUserProviderImpl(jwtService);
 

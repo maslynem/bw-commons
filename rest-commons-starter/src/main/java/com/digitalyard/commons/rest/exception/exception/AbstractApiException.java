@@ -3,12 +3,9 @@ package com.digitalyard.commons.rest.exception.exception;
 import com.digitalyard.commons.rest.exception.model.ErrorCode;
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.Map;
 
-/**
- * Абстрактное базовое исключение для всех кастомных исключений в системе.
- * Содержит только ErrorCode и детали, но не HTTP статус.
- */
 @Getter
 public abstract class AbstractApiException extends RuntimeException {
     private final ErrorCode errorCode;
@@ -24,11 +21,8 @@ public abstract class AbstractApiException extends RuntimeException {
         this(errorCode, details, null);
     }
 
-    protected AbstractApiException(ErrorCode errorCode) {
-        this(errorCode, Map.of(), null);
-    }
-
     private static String generateDebugMessage(ErrorCode errorCode, Map<String, Object> details, Throwable cause) {
+        details = details == null ? Collections.emptyMap() : details;
         StringBuilder message = new StringBuilder("ErrorCode: ").append(errorCode.getCode());
 
         if (!details.isEmpty()) {

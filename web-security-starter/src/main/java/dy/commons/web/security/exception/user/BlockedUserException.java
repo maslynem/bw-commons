@@ -1,10 +1,10 @@
 package dy.commons.web.security.exception.user;
 
-import com.digitalyard.commons.rest.exception.model.CommonErrorCode;
+import dy.commons.web.security.model.errorCode.SecurityErrorCode;
 
 
 public class BlockedUserException extends UserException {
     public BlockedUserException(String login) {
-        super(CommonErrorCode.BLOCKED_USER, login);
+        super(SecurityErrorCode.BLOCKED_USER, login);
     }
 }

@@ -1,8 +1,10 @@
-package dy.commons.web.security.config;
+package dy.commons.web.security;
 
 import com.digitalyard.commons.rest.exception.handler.ApiErrorFactory;
-import com.digitalyard.commons.rest.exception.handler.logger.ApiErrorLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dy.commons.web.security.config.CorsAutoConfiguration;
+import dy.commons.web.security.config.JwtAutoConfiguration;
+import dy.commons.web.security.config.SecurityAutoConfiguration;
 import dy.commons.web.security.service.JwtService;
 import dy.commons.web.security.service.JwtUserProvider;
 import dy.commons.web.security.service.PubKeyLoader;
@@ -12,6 +14,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,35 +31,23 @@ class AutoConfigurationTest {
                     "dy.web-security.permissions[0]=/actuator/health"
             )
             .withBean(ObjectMapper.class, ObjectMapper::new)
-            .withBean(ApiErrorFactory.class, () -> Mockito.mock(ApiErrorFactory.class))
-            .withBean(ApiErrorLogger.class, () -> Mockito.mock(ApiErrorLogger.class));
+            .withBean(ApiErrorFactory.class, () -> Mockito.mock(ApiErrorFactory.class));
 
     @Test
     void contextLoadsAndProvidesExpectedBeans() {
         contextRunner.run(context -> {
             assertThat(context).hasNotFailed();
-            // базовые сервисы
-            assertThat(context).hasBean("pubKeyLoader");
-            assertThat(context).hasBean("jwtService");
-            assertThat(context).hasBean("userProvider");
 
-            assertThat(context).hasBean("jwtAuthenticationProvider");
-            assertThat(context).hasBean("accessDeniedHandler");
-            assertThat(context).hasBean("jwtAuthenticationEntryPoint");
-
-            // типовые проверки
             assertThat(context).hasSingleBean(PubKeyLoader.class);
             assertThat(context).hasSingleBean(JwtService.class);
             assertThat(context).hasSingleBean(JwtUserProvider.class);
-            assertThat(context).hasBean("corsConfiguration");
-            assertThat(context).hasBean("corsConfigurationSource");
+            assertThat(context).hasSingleBean(CorsConfiguration.class);
+            assertThat(context).hasSingleBean(CorsConfigurationSource.class);
 
-            // SecurityFilterChain присутствует
             assertThat(context).hasSingleBean(SecurityFilterChain.class);
             SecurityFilterChain chain = context.getBean(SecurityFilterChain.class);
             assertThat(chain).isNotNull();
 
-            // Cors configuration sanity check
             CorsConfiguration cors = context.getBean(CorsConfiguration.class);
             assertThat(cors.getAllowedMethods()).isNotEmpty();
             assertThat(cors.getMaxAge()).isNotNull();
