@@ -4,7 +4,10 @@ import dy.digitalyard.commons.rest.exception.model.ApiError;
 import dy.digitalyard.commons.web.security.config.JwtAutoConfiguration;
 import dy.digitalyard.commons.web.security.config.SecurityAutoConfiguration;
 import dy.digitalyard.commons.web.security.model.errorCode.SecurityErrorCode;
-import dy.digitalyard.commons.web.security.model.errorCode.details.*;
+import dy.digitalyard.commons.web.security.model.errorCode.details.ForbiddenDetails;
+import dy.digitalyard.commons.web.security.model.errorCode.details.GenericUnauthorizedDetails;
+import dy.digitalyard.commons.web.security.model.errorCode.details.InvalidTokenDetails;
+import dy.digitalyard.commons.web.security.model.errorCode.details.TokenExpiredDetails;
 import dy.digitalyard.commons.web.security.utils.ClaimsUtils;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -119,35 +122,6 @@ public class JwtAuthenticationTokenFilterTest {
                 .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.INVALID_TOKEN.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, InvalidTokenDetails.Fields.reason)).exists());
 
-    }
-
-    @Test
-    void whenValidToken_butUserLocked_thenForbiddenApiError() throws Exception {
-        String token = buildToken(privateKey, builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(true, false))
-                .setExpiration(Date.from(Instant.now().plusSeconds(60))));
-
-        mockMvc.perform(get(TestConfig.SECURE_URL)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().is(SecurityErrorCode.BLOCKED_USER.getHttpStatus().value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.BLOCKED_USER.name()))
-                .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserErrorDetails.Fields.login)).exists());
-
-    }
-
-    @Test
-    void whenValidToken_butUserDeleted_thenUnauthorizedApiError() throws Exception {
-        String token = buildToken(privateKey, builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(false, true))
-                .setExpiration(Date.from(Instant.now().plusSeconds(60))));
-
-        mockMvc.perform(get(TestConfig.SECURE_URL)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(format("$.%s", CODE)).value(SecurityErrorCode.USER_DELETED_OR_DOES_NOT_EXIST.name()))
-                .andExpect(jsonPath(format("$.%s.%s", DETAILS, UserErrorDetails.Fields.login)).exists());
     }
 
     @Test

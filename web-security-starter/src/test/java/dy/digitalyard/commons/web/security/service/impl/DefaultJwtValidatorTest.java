@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class DefaultJwtServiceTest {
+class DefaultJwtValidatorTest {
 
     private static final String SUBJECT = UUID.randomUUID().toString();
     private static final String LOGIN = "test_login";
@@ -45,7 +45,7 @@ class DefaultJwtServiceTest {
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");
 
-        DefaultJwtService service = new DefaultJwtService(props, loader);
+        DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
         Claims claims = service.validateAccessToken(token);
         assertThat(claims).isNotNull();
@@ -72,7 +72,7 @@ class DefaultJwtServiceTest {
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");
 
-        DefaultJwtService service = new DefaultJwtService(props, loader);
+        DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
         assertThatThrownBy(() -> service.validateAccessToken(token))
                 .isInstanceOf(TokenExpiredException.class);
@@ -100,7 +100,7 @@ class DefaultJwtServiceTest {
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");
 
-        DefaultJwtService service = new DefaultJwtService(props, loader);
+        DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
         assertThatThrownBy(() -> service.validateAccessToken(token))
                 .isInstanceOf(InvalidTokenException.class);

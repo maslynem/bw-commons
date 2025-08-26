@@ -7,11 +7,9 @@ import dy.digitalyard.commons.web.security.auth.ForbiddenEntryPoint;
 import dy.digitalyard.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import dy.digitalyard.commons.web.security.auth.JwtAuthenticationProvider;
 import dy.digitalyard.commons.web.security.config.properties.AuthProperties;
-import dy.digitalyard.commons.web.security.service.JwtService;
-import dy.digitalyard.commons.web.security.service.JwtUserProvider;
+import dy.digitalyard.commons.web.security.service.JwtValidator;
 import dy.digitalyard.commons.web.security.service.PubKeyLoader;
-import dy.digitalyard.commons.web.security.service.impl.DefaultJwtService;
-import dy.digitalyard.commons.web.security.service.impl.JwtUserProviderImpl;
+import dy.digitalyard.commons.web.security.service.impl.DefaultJwtValidator;
 import dy.digitalyard.commons.web.security.service.impl.X509PubKeyLoader;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,18 +31,14 @@ public class JwtAutoConfiguration {
 
 
     @Bean
-    public JwtService jwtService(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
-        return new DefaultJwtService(authProperties, pubKeyLoader);
+    public JwtValidator jwtValidator(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
+        return new DefaultJwtValidator(authProperties, pubKeyLoader);
     }
 
-    @Bean
-    public JwtUserProvider userProvider(JwtService jwtService) {
-        return new JwtUserProviderImpl(jwtService);
-    }
 
     @Bean
-    public AuthenticationProvider jwtAuthenticationProvider(JwtUserProvider userProvider) {
-        return new JwtAuthenticationProvider(userProvider);
+    public AuthenticationProvider jwtAuthenticationProvider(JwtValidator jwtValidator) {
+        return new JwtAuthenticationProvider(jwtValidator);
     }
 
     @Bean

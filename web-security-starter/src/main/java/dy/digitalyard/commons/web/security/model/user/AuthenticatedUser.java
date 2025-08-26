@@ -23,8 +23,6 @@ public class AuthenticatedUser implements UserDetails {
     private String firstName;
     private String lastName;
     private String middleName;
-    private boolean locked;
-    private boolean deleted;
     private List<Role> roles;
 
     @JsonIgnore
@@ -54,13 +52,8 @@ public class AuthenticatedUser implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return !this.locked;
+        return true;
     }
-    @JsonIgnore
-    public boolean isAccountLocked() {
-        return this.locked;
-    }
-
     @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {

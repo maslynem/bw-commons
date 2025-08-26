@@ -6,8 +6,7 @@ import dy.digitalyard.commons.rest.exception.logger.ApiErrorLogger;
 import dy.digitalyard.commons.web.security.config.CorsAutoConfiguration;
 import dy.digitalyard.commons.web.security.config.JwtAutoConfiguration;
 import dy.digitalyard.commons.web.security.config.SecurityAutoConfiguration;
-import dy.digitalyard.commons.web.security.service.JwtService;
-import dy.digitalyard.commons.web.security.service.JwtUserProvider;
+import dy.digitalyard.commons.web.security.service.JwtValidator;
 import dy.digitalyard.commons.web.security.service.PubKeyLoader;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,8 +41,7 @@ class AutoConfigurationTest {
             assertThat(context).hasNotFailed();
 
             assertThat(context).hasSingleBean(PubKeyLoader.class);
-            assertThat(context).hasSingleBean(JwtService.class);
-            assertThat(context).hasSingleBean(JwtUserProvider.class);
+            assertThat(context).hasSingleBean(JwtValidator.class);
             assertThat(context).hasSingleBean(CorsConfiguration.class);
             assertThat(context).hasSingleBean(CorsConfigurationSource.class);
 

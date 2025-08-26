@@ -3,7 +3,7 @@ package dy.digitalyard.commons.web.security.service.impl;
 import dy.digitalyard.commons.web.security.config.properties.AuthProperties;
 import dy.digitalyard.commons.web.security.exception.token.InvalidTokenException;
 import dy.digitalyard.commons.web.security.exception.token.TokenExpiredException;
-import dy.digitalyard.commons.web.security.service.JwtService;
+import dy.digitalyard.commons.web.security.service.JwtValidator;
 import dy.digitalyard.commons.web.security.service.PubKeyLoader;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,11 +17,11 @@ import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DefaultJwtService implements JwtService {
+public class DefaultJwtValidator implements JwtValidator {
 
     private final PublicKey pubKey;
 
-    public DefaultJwtService(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
+    public DefaultJwtValidator(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
         this.pubKey = pubKeyLoader.loadPubKey(authProperties.getPublicKeyPath());
     }
 

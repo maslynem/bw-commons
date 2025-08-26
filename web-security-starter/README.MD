@@ -35,7 +35,6 @@ dy:
  - LOGIN — логин
  - FIRST_NAME, MIDDLE_NAME, LAST_NAME
  - USER_RIGHTS — список ролей
- - LOCKED, DELETED — флаги блокировки/удаления
 
 ## Ошибки
 1. Токен отсутствует при запросе защищенного ресурса
@@ -74,31 +73,7 @@ dy:
     }
    }
 ```
-4. Пользователь заблокирован
-```json
-   {
-    "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-    "status": 403,
-    "code": "BLOCKED_USER",
-    "timestamp": "2025-08-25T12:34:56Z",
-    "details": {
-      "login": "USER_LOGIN"
-    }
-   }
-```
-5. Пользователь удален
-```json
-   {
-    "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-    "status": 401,
-    "code": "USER_DELETED_OR_DOES_NOT_EXIST",
-    "timestamp": "2025-08-25T12:34:56Z",
-    "details": {
-      "login": "userLogin"
-    }
-   }
-```
-6. У пользователя недостаточно прав для доступа к ресурсу
+4. У пользователя недостаточно прав для доступа к ресурсу
 ```json
    {
     "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
