@@ -11,15 +11,15 @@ import dy.digitalyard.commons.web.security.service.JwtValidator;
 import dy.digitalyard.commons.web.security.service.PubKeyLoader;
 import dy.digitalyard.commons.web.security.service.impl.DefaultJwtValidator;
 import dy.digitalyard.commons.web.security.service.impl.X509PubKeyLoader;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(AuthProperties.class)
 public class JwtAutoConfiguration {
 
