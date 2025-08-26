@@ -1,0 +1,3 @@
+config.dy.digitalyard.commons.web.security.JwtAutoConfiguration
+config.dy.digitalyard.commons.web.security.CorsAutoConfiguration
+config.dy.digitalyard.commons.web.security.SecurityAutoConfiguration
