@@ -11,7 +11,7 @@
 
 ## Подключение
 ```groovy
-implementation "ru.digitalyard.commons:web-security-starter:1.0.0-SNAPSHOT"
+implementation "ru.digitalyard.commons:web-security-starter:1.0.1"
 ```
 
 ## Настройка (application.yaml)
@@ -24,18 +24,10 @@ dy:
   web-security:
     permissions:
       - /actuator/health
-```
-### CORS и дополнительные разрешения
-```yaml
-dy:
-  web-security:
-    permissions:
-      - /public/**
     cors:
-      enabled: true
-    allowed-origins:
-      - "http://localhost:3000"
-      - "https://example.com"
+      allowed-origins:
+        - "http://localhost:3000"
+        - "https://example.com"
 ```
 
 ## Claims в JWT
@@ -54,7 +46,7 @@ dy:
     "code": "UNAUTHORIZED",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "UNAUTHORIZED": "Full authentication is required to access this resource"
+      "unauthorized": "Full authentication is required to access this resource"
     }
    }
 ```
@@ -66,7 +58,7 @@ dy:
     "code": "TOKEN_EXPIRED",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "EXPIRED_AT": "2025-08-25T05:30:16Z"
+      "expiredAt": "2025-08-25T05:30:16Z"
     }
    }
 ```
@@ -78,7 +70,7 @@ dy:
     "code": "INVALID_TOKEN",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "REASON": "JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted."
+      "reason": "JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted."
     }
    }
 ```
@@ -90,7 +82,7 @@ dy:
     "code": "BLOCKED_USER",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "userLogin": "USER_LOGIN"
+      "login": "USER_LOGIN"
     }
    }
 ```
@@ -98,11 +90,11 @@ dy:
 ```json
    {
     "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-    "status": 403,
+    "status": 401,
     "code": "USER_DELETED_OR_DOES_NOT_EXIST",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "userLogin": "userLogin"
+      "login": "userLogin"
     }
    }
 ```
@@ -114,8 +106,8 @@ dy:
     "code": "FORBIDDEN",
     "timestamp": "2025-08-25T12:34:56Z",
     "details": {
-      "URL": "/test/admin",
-      "LOGIN": "mock_login"
+      "url": "/test/admin",
+      "login": "mock_login"
     }
    }
 ```
