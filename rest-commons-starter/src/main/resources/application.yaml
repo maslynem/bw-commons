@@ -1,0 +1,8 @@
+spring:
+  #Заставляет Spring выбрасывать NoHandlerFoundException вместо возврата стандартной страницы 404
+  mvc:
+    throw-exception-if-no-handler-found: true
+  #Отключает обработку статических ресурсов (CSS, JS, изображения) встроенным обработчиком
+  web:
+    resources:
+      add-mappings: false

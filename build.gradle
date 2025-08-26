@@ -1,12 +1,18 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+plugins.withType(CheckstylePlugin).configureEach {
+    checkstyle {
+        skip = true
+    }
 }
 
 allprojects {
     group = 'ru.digitalyard.commons'
-    version = '1.0.0-SNAPSHOT'
+    version = '1.0.1'
     repositories {
         mavenCentral()
         maven {
@@ -17,6 +23,14 @@ allprojects {
                 password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
             }
         }
+        mavenLocal()
+    }
+    test {
+        useJUnitPlatform()
+
+    }
+    tasks.withType(Javadoc).configureEach {
+        enabled = false
     }
 }
 
@@ -32,7 +46,32 @@ subprojects {
         withSourcesJar()
     }
 
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.0"
+        }
+    }
+
     publishing {
+        publications {
+            create("mavenJava", MavenPublication) {
+                from(components.java)
+                versionMapping {
+                    usage("java-api") {
+                        fromResolutionOf("runtimeClasspath")
+                    }
+                    usage("java-runtime") {
+                        fromResolutionResult()
+                    }
+                }
+                artifactId = project.name
+            }
+        }
         repositories {
             maven {
                 name = "github"
@@ -45,6 +84,8 @@ subprojects {
         }
     }
 }
+
+
 
 tasks.withType(PublishToMavenRepository).configureEach { it.enabled = false }
 tasks.withType(PublishToMavenLocal).configureEach { it.enabled = false }
