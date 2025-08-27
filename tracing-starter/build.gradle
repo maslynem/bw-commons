@@ -1,15 +1,18 @@
 dependencies {
+    api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-autoconfigure'
-    api 'org.springframework.boot:spring-boot-starter' // базовый стартер
+    api 'org.springframework.boot:spring-boot-starter'
+
+    api 'org.springframework.boot:spring-boot-starter-actuator'
 
     // Micrometer tracing + OpenTelemetry bridge
-    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
-    implementation 'io.opentelemetry:opentelemetry-exporter-otlp' // OTLP exporter
+    api 'io.micrometer:micrometer-tracing-bridge-otel'
+    api 'io.opentelemetry:opentelemetry-exporter-otlp'
 
     // Prometheus (опционально, можно убрать если не нужен)
-    implementation 'io.micrometer:micrometer-registry-prometheus'
+    api 'io.micrometer:micrometer-registry-prometheus'
 
     // JSON logging: Logstash Logback Encoder
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    api 'net.logstash.logback:logstash-logback-encoder:7.2'
 
 }
