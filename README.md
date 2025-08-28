@@ -4,7 +4,7 @@
 
 ## Доступные стартеры
 
-### 1. [rest-commons-starter](rest-commons-starter/README.md) (v1.0.1)
+### 1. [rest-commons-starter](rest-commons-starter/README.MD) (v1.0.2)
 
 Стартер для Spring Boot, предоставляющий единую систему обработки исключений и форматирования ошибок для REST API.
 
@@ -17,7 +17,7 @@
 
 ---
 
-### 2. [web-security-starter](web-security-starter/README.md) (v1.0.1)
+### 2. [web-security-starter](web-security-starter/README.MD) (v1.0.2)
 
 Стартер для Spring Boot, добавляющий поддержку JWT-аутентификации и базовых правил безопасности.
 
@@ -31,13 +31,27 @@
 
 ---
 
+### 3. [tracing-starter](tracing-starter/README.MD) (v1.0.2)
+
+Стартер для Spring Boot, обеспечивающий единый механизм трассировки запросов в распределённых системах.
+
+**Возможности:**
+
+- Автоматическая генерация `traceId` и `spanId` для каждого HTTP-запроса
+- Передача `traceId` через заголовки HTTP между сервисами
+- Поддержка логирования всех входящих и исходящих запросов с привязкой к трассировке
+- Интеграция с популярными системами мониторинга и трассировки (например, OpenTelemetry, Sleuth)
+- Единый формат логов с указанием traceId и spanId
+
+
 ## Как подключить
 
 Каждый стартер подключается через Gradle/Maven по отдельности:
 
 ```groovy
-implementation "ru.digitalyard.commons:rest-commons-starter:1.0.1"
-implementation "ru.digitalyard.commons:web-security-starter:1.0.1"
+implementation "ru.digitalyard.commons:rest-commons-starter:1.0.2"
+implementation "ru.digitalyard.commons:web-security-starter:1.0.2"
+implementation "ru.digitalyard.commons:tracing-starter:1.0.2"
 ```
 
 ## Быстрый справочник
@@ -86,6 +100,8 @@ dy-commons/
 ├── rest-commons-starter/
 │   └── README.md
 ├── web-security-starter/
+│   └── README.md
+├── tracing-starter/
 │   └── README.md
 └── README.md
 ```

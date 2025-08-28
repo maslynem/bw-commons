@@ -12,4 +12,4 @@ management:
       probability: ${TRACING_SAMPLING_PROBABILITY:1}
   otlp:
     tracing:
-      endpoint: ${OLTP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
