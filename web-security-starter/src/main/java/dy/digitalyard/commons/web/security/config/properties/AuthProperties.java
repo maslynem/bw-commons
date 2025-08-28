@@ -13,5 +13,5 @@ public class AuthProperties {
      * Path to public key (X509) for JWT verification
      */
     @NotNull
-    private String publicKeyPath;
+    private String publicKeyPath = "classpath:public.key";
 }

@@ -3,6 +3,7 @@ package dy.digitalyard.commons.tracing.thread;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
@@ -14,7 +15,7 @@ import java.lang.reflect.Field;
 @RequiredArgsConstructor
 public class ThreadPoolTaskExecutorPostProcessor implements BeanPostProcessor {
 
-    private final Tracer tracer;
+    private final ObjectProvider<Tracer> tracerProvider;
 
     @Override
     public Object postProcessAfterInitialization(@NonNull Object bean,
@@ -26,7 +27,7 @@ public class ThreadPoolTaskExecutorPostProcessor implements BeanPostProcessor {
         try {
             // прочитаем приватное поле taskDecorator, если оно есть
             TaskDecorator existing = readExistingTaskDecorator(tpe);
-            TaskDecorator ours = new MdcTaskDecorator(tracer);
+            TaskDecorator ours = new MdcTaskDecorator(tracerProvider);
 
             TaskDecorator wrapped;
             if (existing != null) {
@@ -44,7 +45,7 @@ public class ThreadPoolTaskExecutorPostProcessor implements BeanPostProcessor {
             log.warn("Failed to wrap TaskDecorator for ThreadPoolTaskExecutor '{}'. Setting our TaskDecorator directly. Reason: {}",
                     beanName, ex.toString());
             try {
-                tpe.setTaskDecorator(new MdcTaskDecorator(tracer));
+                tpe.setTaskDecorator(new MdcTaskDecorator(tracerProvider));
             } catch (Throwable t) {
                 log.error("Failed to set TaskDecorator on ThreadPoolTaskExecutor '{}': {}", beanName, t.toString());
             }

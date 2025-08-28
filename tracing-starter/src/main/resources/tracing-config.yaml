@@ -1,0 +1,15 @@
+management:
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ${ENDPOINTS_WEB_EXPOSURE_INCLUDE:health,info,prometheus}
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1}
+  otlp:
+    tracing:
+      endpoint: ${OLTP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}

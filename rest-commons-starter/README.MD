@@ -31,6 +31,20 @@ implementation "ru.digitalyard.commons:rest-commons-starter:1.0.1"
   }
 }
 ```
+## Настройки Spring MVC
+
+Для корректной работы механизма обработки исключений добавлены следующие настройки Spring по-умолчанию:
+
+```yaml
+spring:
+  mvc:
+    # Заставляет Spring выбрасывать NoHandlerFoundException вместо возврата стандартной страницы 404
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      # Отключает обработку статических ресурсов (CSS, JS, изображения) встроенным обработчиком
+      add-mappings: false
+```
 
 ## Возвращаемые коды ошибок
 [CommonErrorCode.java](src/main/java/dy/digitalyard/commons/rest/exception/model/CommonErrorCode.java)

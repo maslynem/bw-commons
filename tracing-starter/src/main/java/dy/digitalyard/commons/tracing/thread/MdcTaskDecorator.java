@@ -4,6 +4,7 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
 
@@ -16,10 +17,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MdcTaskDecorator implements TaskDecorator {
 
-    private final Tracer tracer;
+    private final ObjectProvider<Tracer> tracerProvider;
 
     @Override
     public @NonNull Runnable decorate(@NonNull Runnable runnable) {
+        Tracer tracer = tracerProvider.getIfAvailable();
         Map<String, String> contextMap = MDC.getCopyOfContextMap();
         Span current = tracer != null ? tracer.currentSpan() : null;
         final String traceId = (current != null && current.context() != null) ? current.context().traceId() : null;

@@ -15,21 +15,40 @@ implementation "ru.digitalyard.commons:web-security-starter:1.0.1"
 ```
 
 ## Настройка (application.yaml)
+# Конфигурация безопасности
 
-### Минимально
+## Обязательные параметры
+- `dy.auth.public-key-path` - путь к PEM-файлу с публичным ключом для верификации JWT-токенов
+
+## Настройки аутентификации (`dy.auth.*`)
+| Параметр | Обязательный | Описание |
+|----------|--------------|----------|
+| `public-key-path` | Да | Путь к файлу публичного ключа (X.509). Поддерживает форматы `classpath:`, `file:`, `http:` |
+
+## Настройки безопасности (`dy.web-security.*`)
+| Параметр | Обязательный | По умолчанию | Описание |
+|----------|--------------|--------------|----------|
+| `permissions` | Нет | `[]` | Массив URL-шаблонов, доступных без аутентификации |
+| `cors.allowed-origins` | Нет | `["*"]` | Разрешенные домены для CORS |
+| `cors.allowed-methods` | Нет | `["GET", "POST", "PUT", "DELETE", "OPTIONS"]` | Разрешенные HTTP-методы |
+| `cors.allowed-headers` | Нет | `["*"]` | Разрешенные заголовки запроса |
+| `cors.allow-credentials` | Нет | `false` | Разрешение передачи cookies |
+| `cors.max-age` | Нет | `1h` | Время кэширования CORS-префлайт запросов |
+
+## Пример настройки для разработки
 ```yaml
 dy:
   auth:
-    public-key-path: classpath:public.crt   # X.509 сертификат
+    public-key-path: classpath:dev_public.pem
   web-security:
     permissions:
-      - /actuator/health
+      - "/actuator/health"
+      - "/v3/api-docs/**"
     cors:
-      allowed-origins:
-        - "http://localhost:3000"
-        - "https://example.com"
+      allowed-origins: "*"
+      allowed-methods: "*"
+      allow-credentials: false
 ```
-
 ## Claims в JWT
  - sub — UUID пользователя
  - LOGIN — логин
