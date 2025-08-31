@@ -1,8 +1,26 @@
 management:
+  otlp:
+    logging:
+      endpoint: ${OTLP_LOGGING_ENDPOINT:http://localhost:4317}
+      transport: ${OTLP_LOGGING_TRANSPORT:grpc} # http ot grpc
+      timeout: ${OTLP_LOGGING_TIMEOUT:10s}
+      connectTimeout: ${OTLP_LOGGING_CONNECT_TIMEOUT:10s}
+      compression: ${OTLP_LOGGING_COMPRESSION:none}
+    tracing:
+      transport: ${OTLP_TRACING_TRANSPORT:grpc} # http ot grpc
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4317}
+      timeout: ${OTLP_TRACING_TIMEOUT:10s}
+      compression: ${OTLP_TRACING_COMPRESSION:none}
+    metrics:
+      export:
+        baseTimeUnit: ${OTLP_METRICS_BASE_TIME_UNIT:SECONDS}
+        enabled: ${OTLP_METRICS_ENABLED:true}
+        url: ${OTLP_METRICS_ENDPOINT:http://localhost:4318/v1/metrics}
+        step: ${OTLP_METRICS_STEP:10s}
   prometheus:
     metrics:
       export:
-        enabled: true
+        enabled: ${PROMETHEUS_METRICS_EXPORT_ENABLED:true}
   endpoints:
     web:
       exposure:
@@ -10,6 +28,21 @@ management:
   tracing:
     sampling:
       probability: ${TRACING_SAMPLING_PROBABILITY:1}
-  otlp:
-    tracing:
-      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+
+logging:
+  appender:
+    console:
+      enable: ${APPENDER_CONSOLE_ENABLE:true}
+    file:
+      enable: ${APPENDER_FILE_ENABLE:true}
+    otlp:
+      enable: ${APPENDER_OTLP_ENABLE:true}
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_FILE_PATTERN:${LOG_FILE_PATH}/archived/app.%d{yyyy-MM-dd}.%i.log.gz}
+      max-file-size: ${LOG_FILE_ROLLING_MAX_FILE_SIZE:50MB}
+      max-history: ${LOG_FILE_ROLLING_MAX_HISTORY:14}
+      total-size-cap: ${LOG_FILE_ROLLING_TOTAL_SIZE_CAP:5GB}
+  file:
+    name: ${LOG_FILE_NAME:${spring.application.name}.log}
+    path: ${LOG_FILE_PATH:/var/app-logs}

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -13,6 +14,7 @@ import java.lang.reflect.Field;
 
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnClass(io.micrometer.tracing.Tracer.class)
 public class ThreadPoolTaskExecutorPostProcessor implements BeanPostProcessor {
 
     private final ObjectProvider<Tracer> tracerProvider;

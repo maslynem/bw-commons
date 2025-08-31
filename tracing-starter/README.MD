@@ -1,7 +1,6 @@
-# tracing-starter (v1.0.2)
+# Tracing Starter
 
-Стартер для Spring Boot, добавляющий поддержку трассировки запросов и логирования с traceId/spanId через Micrometer и
-OpenTelemetry.
+Tracing Starter — это Spring Boot авто-конфигурируемый модуль, предназначенный для централизации логики отправки метрик, логов и трейсов в системы мониторинга, такие как Grafana Alloy (или другие коллекторы, поддерживающие OTLP). Он интегрирует Micrometer Tracing с OpenTelemetry (OTEL) bridge, настраивает экспорт через OTLP (gRPC по умолчанию), добавляет обработку MDC для trace/span ID в логах и обеспечивает пропагation контекста в асинхронных задачах.
 
 ## Содержание
 
@@ -9,133 +8,76 @@ OpenTelemetry.
 - [Подключение](#подключение)
 - [Основные параметры](#основные-параметры)
 - [Логирование](#логирование)
-- [Настройка логирования (Logback)](#настройка-логирования-logback)
 - [Переменные среды](#переменные-среды)
 - [MDC фильтр](#mdc-фильтр)
 - [ThreadPoolTaskExecutor](#threadpooltaskexecutor)
 
 ## Возможности
 
-- Автоматическая интеграция с Micrometer Tracing и OpenTelemetry
-- Поддержка MDC для traceId/spanId в логах
-- Асинхронный logging (JSON файл + консоль)
-- BeanPostProcessor для ThreadPoolTaskExecutor с сохранением MDC контекста
-- Настройка экспорта метрик в Prometheus (опционально)
+- **Трейсинг**: Автоматическая настройка Micrometer Tracing с мостом к OpenTelemetry. Экспорт трейсов в OTLP-эндпоинт (gRPC).
+- **Метрики**: Экспорт метрик через Micrometer OTLP registry (отключен Prometheus по умолчанию).
+- **Логи**: Интеграция с Logback для отправки логов в OTEL через OpenTelemetry Log Appender (экспорт в OTLP).
+- **MDC Propagation**: Автоматическое добавление traceId и spanId в MDC для веб-запросов и асинхронных задач, чтобы логи содержали контекст трейсинга.
+- **Конфигурация по умолчанию**: Загружает `tracing-config.yaml` и `logback-spring.xml` для базовой настройки, с возможностью переопределения через application.properties или env vars.
+
 
 ## Подключение
-
-```groovy
-implementation "ru.digitalyard.commons:tracing-starter:1.0.2"
-````
+   ```
+   dependencies {
+       implementation 'ru.digitalyard.commons:tracing-starter:1.0.2-SNAPSHOT'
+   }
+   ```
 
 ## Основные параметры
 
-| Параметр                                       | По умолчанию                      | Описание                                           |
-|------------------------------------------------|-----------------------------------|----------------------------------------------------|
-| `management.prometheus.metrics.export.enabled` | `true`                            | Включение/выключение экспорта метрик Prometheus    |
-| `management.endpoints.web.exposure.include`    | `health,info,prometheus`          | Список открытых эндпоинтов для actuator            |
-| `management.tracing.sampling.probability`      | `1`                               | Вероятность сэмплирования трассировки (0..1)       |
-| `management.otlp.tracing.endpoint`             | `http://localhost:4318/v1/traces` | URL OTLP collector для отправки данных трассировки |
+Параметры загружаются из `tracing-config.yaml` и могут быть переопределены в application.properties/yaml или env vars:
+
+- `management.tracing.sampling.probability`: Вероятность семплинга трейсов (default: 1.0 — все трейсы).
+- `management.otlp.tracing.endpoint`: Эндпоинт для экспорта трейсов (default: http://localhost:4317 — gRPC).
+- `management.otlp.metrics.export.url`: Эндпоинт для экспорта метрик (default: http://localhost:4317).
+- `management.otlp.metrics.export.enabled`: Включить экспорт метрик (default: true).
+- `management.endpoints.web.exposure.include`: Экспонируемые эндпоинты Actuator (default: health,info).
+- `management.prometheus.metrics.export.enabled`: Отключен по умолчанию (false), чтобы избежать дублирования с OTLP.
+
+Для логов: Уровень логирования root — INFO, но может быть изменён в вашем logback.xml.
 
 ## Логирование
 
-* JSON-лог с полями:
+Настроено через `logback-spring.xml`:
+- **ConsoleAppender**: Вывод в консоль с паттерном, включающим timestamp, level, logger, message, traceId, spanId и exception.
+- **OpenTelemetryAppender**: Отправляет логи в OTEL SDK (экспорт в OTLP). Захватывает все MDC атрибуты (включая traceId/spanId).
+- **AsyncAppender**: Оборачивает OTEL appender для асинхронной отправки (queueSize=8192, без discarding).
 
-    * `app` — имя приложения
-    * `timestamp` — время события
-    * `level` — уровень логирования
-    * `class` — класс логирования
-    * `traceId`, `spanId` — из MDC
-    * `message` — текст сообщения
-    * `exception` — стек ошибки (если есть)
-* Асинхронная запись в файл (`/var/app-logs/app.log` по умолчанию)
-* Консольный вывод удобен для разработки
-
-## Настройка логирования (Logback)
-
-`tracing-starter` использует `logback-spring.xml` для конфигурации логирования с поддержкой MDC (traceId/spanId).  
-Вы можете управлять путями и ротацией логов через стандартные Spring свойства:
-
-| Свойство                          | Назначение                             | По умолчанию                                 |
-|-----------------------------------|----------------------------------------|----------------------------------------------|
-| `logging.file.path`               | Путь к каталогу для файлов логов       | `/var/app-logs`                              |
-| `logging.file.pattern`            | Паттерн имени файла для ротации        | `/var/app-logs/app.%d{yyyy-MM-dd}.%i.log.gz` |
-| `logging.rotation.max-file-size`  | Максимальный размер одного файла логов | `50MB`                                       |
-| `logging.rotation.max-history`    | Количество старых файлов для хранения  | `14`                                         |
-| `logging.rotation.total-size-cap` | Общий размер всех файлов логов         | `5GB`                                        |
+Логи экспортируются в тот же OTLP эндпоинт, что и трейсы (через глобальный OTEL SDK). Для кастомизации добавьте свой logback.xml и импортируйте/переопределите appenders.
 
 ## Переменные среды
 
-#### `ENDPOINTS_WEB_EXPOSURE_INCLUDE`
-
-* **Назначение:** Определяет, какие Spring Boot Actuator эндпоинты будут открыты для HTTP-доступа.
-* **Spring свойство:** `management.endpoints.web.exposure.include`
-* **Детали:**
-    * Список эндпоинтов через запятую (`health,info,prometheus`).
-    * По умолчанию открыты `health`, `info` и `prometheus`.
-
----
-
-#### `TRACING_SAMPLING_PROBABILITY`
-
-* **Назначение:** Определяет вероятность сэмплирования запросов для трассировки.
-* **Spring свойство:** `management.tracing.sampling.probability`
-* **Детали:**
-    * Значение от `0` до `1`.
-        * `0` — трассировка полностью отключена.
-        * `1` — трассируются все запросы.
-        * `0.1` — трассируется 10% запросов.
-    * Позволяет контролировать нагрузку на систему при сборе трассировок.
-
----
-
-#### `OTLP_TRACING_ENDPOINT`
-
-* **Назначение:** URL OTLP-коллектора для отправки данных трассировки.
-* **Spring свойство:** `management.otlp.tracing.endpoint`
-* **Детали:**
-    * Указывает на OpenTelemetry Collector или Jaeger/Tempo endpoint.
-    * Протокол HTTP/HTTPS
-    * Если переменная не задана, по умолчанию используется `http://localhost:4318/v1/traces`.
-
----
-#### `LOGGING_FILE_PATH`
-* **Назначение:** Путь к каталогу для файлов логов.
-* **Spring свойство:** `logging.file.path`
-* **По умолчанию:** `/var/app-logs`
-
-#### `LOGGING_FILE_PATTERN`
-
-* **Назначение:** Паттерн имени файла для ротации логов.
-* **Spring свойство:** `logging.file.pattern`
-* **По умолчанию:** `/var/app-logs/app.%d{yyyy-MM-dd}.%i.log.gz`
-
-#### `LOGGING_ROTATION_MAX_FILE_SIZE`
-
-* **Назначение:** Максимальный размер одного файла логов.
-* **Spring свойство:** `logging.rotation.max-file-size`
-* **По умолчанию:** `50MB`
-
-
-#### `LOGGING_ROTATION_MAX_HISTORY`
-
-* **Назначение:** Количество старых файлов для хранения.
-* **Spring свойство:** `logging.rotation.max-history`
-* **По умолчанию:** `14`
-
-
-#### `LOGGING_ROTATION_TOTAL_SIZE_CAP`
-* **Назначение:** Общий размер всех файлов логов.
-* **Spring свойство:** `logging.rotation.total-size-cap`
-* **По умолчанию:** `5GB`
+Стартер поддерживает переопределение через env vars (Spring Boot convention):
+- `TRACING_SAMPLING_PROBABILITY`: Аналог management.tracing.sampling.probability.
+- `OTLP_TRACING_ENDPOINT`: Эндпоинт трейсов.
+- `OTLP_METRICS_ENDPOINT`: Эндпоинт метрик.
+- `ENDPOINTS_WEB_EXPOSURE_INCLUDE`: Экспонируемые эндпоинты.
+- OTEL-специфичные vars (например, OTEL_SERVICE_NAME) для глобальной конфигурации OTEL SDK.
 
 
 ## MDC фильтр
 
-`TracingMdcFilter` автоматически подставляет в MDC текущие `traceId` и `spanId` для каждого HTTP-запроса.
+`TracingMdcFilter` — OncePerRequestFilter, регистрируемый в авто-конфигурации:
+- Для каждого HTTP-запроса извлекает currentSpan из Tracer.
+- Добавляет `traceId` и `spanId` в SLF4J MDC.
+- Удаляет их после обработки запроса.
+- Порядок: LOWEST_PRECEDENCE - 100 (после других фильтров).
+- Условие: Только для servlet web-apps и если есть Tracer.
+
+Это обеспечивает, что все логи в рамках запроса содержат трейс-контекст.
 
 ## ThreadPoolTaskExecutor
 
-* Автоматическое декорирование задач с сохранением MDC контекста
-* Поддержка уже существующих TaskDecorator через обёртку
-* BeanPostProcessor: `ThreadPoolTaskExecutorPostProcessor`
+`ThreadPoolTaskExecutorPostProcessor` — BeanPostProcessor, применяемый ко всем ThreadPoolTaskExecutor бинам:
+- Захватывает существующий TaskDecorator (если есть) и оборачивает его.
+- Добавляет `MdcTaskDecorator`: При submit задачи захватывает текущий MDC, traceId и spanId.
+- В worker-потоке восстанавливает MDC и IDs для логов в асинхронных задачах.
+- Не пропагатирует полный Span (только IDs для логов; для полного трейсинга используйте Tracer вручную).
+- Логирует ошибки, если рефлексия не удалась.
+
+Это предотвращает потерю контекста в @Async методах или custom пулах.

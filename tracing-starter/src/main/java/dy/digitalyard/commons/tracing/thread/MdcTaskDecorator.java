@@ -5,6 +5,7 @@ import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * Декоратор применяется в момент submit'а задачи.
  */
 @RequiredArgsConstructor
+@ConditionalOnClass(io.micrometer.tracing.Tracer.class)
 public class MdcTaskDecorator implements TaskDecorator {
 
     private final ObjectProvider<Tracer> tracerProvider;
