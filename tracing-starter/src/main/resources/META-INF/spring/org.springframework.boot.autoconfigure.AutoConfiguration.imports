@@ -1,0 +1,2 @@
+dy.digitalyard.commons.tracing.TracingAutoConfiguration
+dy.digitalyard.commons.logging.OpenTelemetryAppenderConfiguration

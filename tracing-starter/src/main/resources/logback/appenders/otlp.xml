@@ -1,0 +1,14 @@
+<included>
+    <springProperty name="APPENDER_OTLP_ENABLE" source="logging.appender.otlp.enable" defaultValue="true"/>
+
+
+    <appender name="OTLP" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+                <expression>return ${APPENDER_OTLP_ENABLE};</expression>
+            </evaluator>
+            <OnMatch>NEUTRAL</OnMatch>
+            <OnMismatch>DENY</OnMismatch>
+        </filter>
+    </appender>
+</included>

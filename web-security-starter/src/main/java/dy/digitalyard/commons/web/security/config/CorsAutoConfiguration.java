@@ -1,16 +1,16 @@
 package dy.digitalyard.commons.web.security.config;
 
 import dy.digitalyard.commons.web.security.config.properties.WebSecurityProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(WebSecurityProperties.class)
 public class CorsAutoConfiguration {
 

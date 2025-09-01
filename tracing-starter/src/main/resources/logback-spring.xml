@@ -1,0 +1,14 @@
+<configuration>
+    <springProperty name="APP_NAME" source="spring.application.name"/>
+
+    <include resource="logback/appenders/console.xml"/>
+    <include resource="logback/appenders/json-file.xml"/>
+    <include resource="logback/appenders/otlp.xml"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_JSON"/>
+        <appender-ref ref="OTLP"/>
+    </root>
+
+</configuration>

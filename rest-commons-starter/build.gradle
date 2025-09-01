@@ -1,19 +1,12 @@
 dependencies {
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-validation'
-
     api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    api project(':utils-starter')
 
     //spring-boot-configuration
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-}
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += '-parameters'
 }
