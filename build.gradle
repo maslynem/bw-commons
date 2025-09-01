@@ -4,15 +4,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-plugins.withType(CheckstylePlugin).configureEach {
-    checkstyle {
-        skip = true
-    }
-}
-
 allprojects {
     group = 'ru.digitalyard.commons'
-    version = '1.0.1'
+    version = '1.0.2'
     repositories {
         mavenCentral()
         maven {
@@ -24,10 +18,6 @@ allprojects {
             }
         }
         mavenLocal()
-    }
-    test {
-        useJUnitPlatform()
-
     }
     tasks.withType(Javadoc).configureEach {
         enabled = false
@@ -47,13 +37,19 @@ subprojects {
     }
 
     dependencies {
+
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
     }
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.0"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.4.0"
         }
     }
 
@@ -83,9 +79,21 @@ subprojects {
             }
         }
     }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs += '-parameters'
+    }
 }
-
-
 
 tasks.withType(PublishToMavenRepository).configureEach { it.enabled = false }
 tasks.withType(PublishToMavenLocal).configureEach { it.enabled = false }
+
+plugins.withType(CheckstylePlugin).configureEach {
+    checkstyle {
+        skip = true
+    }
+}

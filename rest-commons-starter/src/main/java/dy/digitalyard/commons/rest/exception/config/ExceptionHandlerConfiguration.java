@@ -6,14 +6,17 @@ import dy.digitalyard.commons.rest.exception.mapper.ExceptionDetailsMapper;
 import dy.digitalyard.commons.rest.exception.mapper.ExceptionDetailsMapperRegistry;
 import dy.digitalyard.commons.rest.exception.mapper.impl.*;
 import dy.digitalyard.commons.rest.exception.model.ApiErrorDetails;
+import dy.digitalyard.commons.utils.yaml.CustomConfigPropertiesReaderFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 
-@Configuration
+@AutoConfiguration
 @Import(GlobalExceptionHandler.class)
+@PropertySource(value = "classpath:web-settings.yaml", factory = CustomConfigPropertiesReaderFactory.class)
 public class ExceptionHandlerConfiguration {
 
     @Bean

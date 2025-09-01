@@ -4,8 +4,8 @@ import dy.digitalyard.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import dy.digitalyard.commons.web.security.auth.JwtAuthenticationTokenFilter;
 import dy.digitalyard.commons.web.security.config.properties.WebSecurityProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -20,7 +20,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-@Configuration
+@AutoConfiguration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor

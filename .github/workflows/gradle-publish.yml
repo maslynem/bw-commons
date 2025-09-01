@@ -1,37 +1,135 @@
-name: Gradle Package
+name: Publish only modules with changed artifact content
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [ develop ]
+  push:
+    branches: [ develop ] # опционально: пуши в develop
 
 jobs:
-  build:
+  publish-changed:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-      
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Checkout (full history and tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4.0.0
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Publish to GitHub Packages
-      run: ./gradlew publish
-      env:
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.DIGITAL_YARD_PAT }}
+      - name: Determine modules from settings.gradle
+        id: modules
+        run: |
+          # Parse included modules from settings.gradle (выдёргиваем имена между одинарными кавычками)
+          MODULES=$(grep -oP "(?<=include ).*" settings.gradle | sed "s/,/ /g" | tr -d '"' | tr -d "'" | tr -s ' ' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\r' | xargs)
+          # Fallback: если settings.gradle не содержит include, можно перечислить вручную:
+          if [ -z "$MODULES" ]; then
+            MODULES="rest-commons-starter tracing-starter web-security-starter"
+          fi
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+          
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+        
+      - name: Build candidates (jar only)
+        run: |
+          # соберём jar для всех модулей — это быстрый шаг
+          for m in ${{ steps.modules.outputs.modules }}; do
+            echo "Assembling $m"
+            ./gradlew :$m:clean :$m:jar --no-daemon --stacktrace
+          done
+
+      - name: Compare with published artifact and publish if different
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.DIGITAL_YARD_PAT }}
+          MAVEN_REPO_BASE: "https://maven.pkg.github.com/maslynem/DigitalYard"
+          GROUP_PATH: "ru/digitalyard/commons"
+        run: |
+          set -euo pipefail
+
+          # Функция: нормализованный hash содержимого JAR (без META-INF и без директорий)
+          jar_content_hash() {
+            local jar="$1"
+            # Используем jar tf (из JDK) для списка, исключаем META-INF и директории
+            jar tf "$jar" | grep -v '^META-INF/' | grep -v '/$' | sort | \
+            while IFS= read -r entry; do
+              # unzip -p вернёт содержимое файла в stdout
+              unzip -p "$jar" "$entry" || true
+            done | sha256sum | awk '{print $1}'
+          }
+
+          # Helper: get previous published version via maven-metadata.xml
+          get_latest_published_version() {
+            local module="$1"
+            local meta_url="${MAVEN_REPO_BASE}/${GROUP_PATH}/${module}/maven-metadata.xml"
+            # Запрос maven-metadata.xml (Basic auth через GITHUB_ACTOR:GITHUB_TOKEN)
+            if ! curl -fsSL -u "${GITHUB_ACTOR}:${GITHUB_TOKEN}" "$meta_url" -o /tmp/maven-metadata-${module}.xml; then
+              echo ""   # нет метаданных → нет предыдущих версий
+              return
+            fi
+            # Вытаскиваем последний version из списка (<versions><version>...</version></versions>)
+            local latest
+            latest=$(grep -oP '(?<=<version>).*?(?=</version>)' /tmp/maven-metadata-${module}.xml | tail -n1 || true)
+            echo "$latest"
+          }
+
+          # Loop modules
+          for m in ${{ steps.modules.outputs.modules }}; do
+            echo "---- MODULE: $m ----"
+            # Найдём локально собранный JAR (plain jar). Игнорируем -sources и -javadoc
+            local_jar=$(ls $m/build/libs/*.jar 2>/dev/null | grep -v -- '-sources' | grep -v -- '-javadoc' | head -n1 || true)
+            if [ -z "$local_jar" ]; then
+              echo "No jar found for $m — skipping"
+              continue
+            fi
+            echo "Local jar: $local_jar"
+
+            prev_version=$(get_latest_published_version "$m")
+            if [ -z "$prev_version" ]; then
+              echo "No previous published version for $m — will publish"
+              PUBLISH=true
+            else
+              echo "Previous version for $m is: $prev_version"
+              prev_url="${MAVEN_REPO_BASE}/${GROUP_PATH}/${m}/${prev_version}/${m}-${prev_version}.jar"
+              echo "Downloading previous jar from: $prev_url"
+              if ! curl -fsSL -u "${GITHUB_ACTOR}:${GITHUB_TOKEN}" -o /tmp/prev-${m}.jar "$prev_url"; then
+                echo "Could not download previous jar for $m (maybe private or not exist) — will publish"
+                PUBLISH=true
+              else
+                echo "Computing hashes..."
+                local_hash=$(jar_content_hash "$local_jar")
+                prev_hash=$(jar_content_hash "/tmp/prev-${m}.jar")
+                echo "Local hash: $local_hash"
+                echo "Prev  hash: $prev_hash"
+                if [ "$local_hash" = "$prev_hash" ]; then
+                  echo "Artifact content is IDENTICAL to previously published -> SKIP publishing for $m"
+                  PUBLISH=false
+                else
+                  echo "Artifact content differs -> PUBLISH $m"
+                  PUBLISH=true
+                fi
+              fi
+            fi
+
+            if [ "$PUBLISH" = true ]; then
+              echo "Publishing $m ..."
+              ./gradlew :$m:publish -PprojectVersion=${projectVersion:-$(./gradlew -q properties -p . | grep '^version:' | awk '{print $2}')} --no-daemon --stacktrace
+            else
+              echo "Skipping publish for $m"
+            fi
+
+            # cleanup temp files
+            rm -f /tmp/prev-${m}.jar /tmp/maven-metadata-${m}.xml || true
+          done
