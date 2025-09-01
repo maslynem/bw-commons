@@ -3,9 +3,6 @@
 
 
     <appender name="OTLP" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender">
-    </appender>
-
-    <appender name="ASYNC_OTLP" class="ch.qos.logback.classic.AsyncAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
                 <expression>return ${APPENDER_OTLP_ENABLE};</expression>
@@ -13,8 +10,5 @@
             <OnMatch>NEUTRAL</OnMatch>
             <OnMismatch>DENY</OnMismatch>
         </filter>
-        <appender-ref ref="OTLP"/>
-        <queueSize>8192</queueSize>
-        <discardingThreshold>0</discardingThreshold>
     </appender>
 </included>

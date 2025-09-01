@@ -1,6 +1,6 @@
 <included>
 
-    <springProperty name="APPENDER_FILE_ENABLE" source="logging.appender.file.enable"  defaultValue="true"/>
+    <springProperty name="APPENDER_FILE_ENABLE" source="logging.appender.file.enable"  defaultValue="false"/>
     <springProperty name="LOG_FILE_NAME" source="logging.file.name" defaultValue="${APP_NAME}.log"/>
     <springProperty name="LOG_FILE_PATH" source="logging.file.path" defaultValue="/var/app-logs"/>
     <springProperty name="LOG_FILE_ROLLING_PATTERN" source="logging.logback.rollingpolicy.file-name-pattern"

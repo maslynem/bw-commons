@@ -37,8 +37,7 @@ jobs:
           if [ -z "$MODULES" ]; then
             MODULES="rest-commons-starter tracing-starter web-security-starter"
           fi
-          echo "modules=$MODULES"
-          echo "::set-output name=modules::$MODULES"
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
