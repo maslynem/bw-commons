@@ -39,7 +39,10 @@ jobs:
           fi
           echo "modules=$MODULES"
           echo "::set-output name=modules::$MODULES"
-
+          
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+        
       - name: Build candidates (jar only)
         run: |
           # соберём jar для всех модулей — это быстрый шаг
