@@ -53,8 +53,8 @@ jobs:
       - name: Compare with published artifact and publish if different
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.DIGITAL_YARD_PAT }}
-          MAVEN_REPO_BASE: "https://maven.pkg.github.com/maslynem/DigitalYard"
+          GITHUB_TOKEN: ${{ secrets.BOARD_WORLD_PAT }}
+          MAVEN_REPO_BASE: "https://maven.pkg.github.com/maslynem/BoardWorld"
           GROUP_PATH: "ru/boardworld/commons"
         run: |
           set -euo pipefail
