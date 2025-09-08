@@ -1,4 +1,4 @@
-dy:
+bw:
   auth:
     public-key-path: classpath:public.key
   web-security:
