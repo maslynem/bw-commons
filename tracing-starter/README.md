@@ -24,7 +24,7 @@ Tracing Starter — это Spring Boot авто-конфигурируемый �
 
    ```
    dependencies {
-       implementation 'ru.digitalyard.commons:tracing-starter:latest'
+       implementation 'ru.boardworld.commons:tracing-starter:latest'
    }
    ```
 

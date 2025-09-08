@@ -1,3 +1,3 @@
-dy.digitalyard.commons.web.security.config.JwtAutoConfiguration
-dy.digitalyard.commons.web.security.config.CorsAutoConfiguration
-dy.digitalyard.commons.web.security.config.SecurityAutoConfiguration
+config.ru.boardworld.commons.web.security.JwtAutoConfiguration
+config.ru.boardworld.commons.web.security.CorsAutoConfiguration
+config.ru.boardworld.commons.web.security.SecurityAutoConfiguration

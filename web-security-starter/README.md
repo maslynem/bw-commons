@@ -28,7 +28,7 @@
 ## Подключение
 
 ```groovy
-implementation "ru.digitalyard.commons:web-security-starter:1.0.1"
+implementation "ru.boardworld.commons:web-security-starter:1.0.1"
 ```
 
 # Переменные окружения
@@ -37,18 +37,18 @@ implementation "ru.digitalyard.commons:web-security-starter:1.0.1"
 
 | Переменная                | По умолчанию           | Соответствующая property  | Описание                                                                                   |
 |---------------------------|------------------------|---------------------------|--------------------------------------------------------------------------------------------|
-| `DY_AUTH_PUBLIC_KEY_PATH` | `classpath:public.key` | `dy.auth.public-key-path` | Путь к файлу публичного ключа (X.509). Поддерживает форматы `classpath:`, `file:`, `http:` |
+| `BW_AUTH_PUBLIC_KEY_PATH` | `classpath:public.key` | `bw.auth.public-key-path` | Путь к файлу публичного ключа (X.509). Поддерживает форматы `classpath:`, `file:`, `http:` |
 
 ## Настройки безопасности
 
 | Переменная                                    | По умолчанию                                  | Соответствующая property                 | Описание                                          |
 |-----------------------------------------------|-----------------------------------------------|------------------------------------------|---------------------------------------------------|
-| `DY_AUTH_WEB_SECURITY_PERMISSIONS`            | `[]`                                          | `dy.web-security.permissions`            | Массив URL-шаблонов, доступных без аутентификации |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_ORIGINS`   | `["*"]`                                       | `dy.web-security.cors.allowed-origins`   | Разрешенные домены для CORS                       |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_METHODS`   | `["GET", "POST", "PUT", "DELETE", "OPTIONS"]` | `dy.web-security.cors.allowed-methods`   | Разрешенные HTTP-методы                           |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_HEADERS`   | `["*"]`                                       | `dy.web-security.cors.allowed-headers`   | Разрешенные заголовки запроса                     |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOW_CREDENTIALS` | `false`                                       | `dy.web-security.cors.allow-credentials` | Разрешение передачи cookies                       |
-| `DY_AUTH_WEB_SECURITY_CORS_MAX_AGE`           | `1h`                                          | `dy.web-security.cors.max-age`           | Время кэширования CORS-префлайт запросов          |
+| `BW_AUTH_WEB_SECURITY_PERMISSIONS`            | `[]`                                          | `bw.web-security.permissions`            | Массив URL-шаблонов, доступных без аутентификации |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_ORIGINS`   | `["*"]`                                       | `bw.web-security.cors.allowed-origins`   | Разрешенные домены для CORS                       |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_METHODS`   | `["GET", "POST", "PUT", "DELETE", "OPTIONS"]` | `bw.web-security.cors.allowed-methods`   | Разрешенные HTTP-методы                           |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_HEADERS`   | `["*"]`                                       | `bw.web-security.cors.allowed-headers`   | Разрешенные заголовки запроса                     |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOW_CREDENTIALS` | `false`                                       | `bw.web-security.cors.allow-credentials` | Разрешение передачи cookies                       |
+| `BW_AUTH_WEB_SECURITY_CORS_MAX_AGE`           | `1h`                                          | `bw.web-security.cors.max-age`           | Время кэширования CORS-префлайт запросов          |
 
 ## Пример настройки для разработки
 

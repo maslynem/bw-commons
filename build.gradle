@@ -5,13 +5,13 @@ plugins {
 }
 
 allprojects {
-    group = 'ru.digitalyard.commons'
+    group = 'ru.boardworld.commons'
     version = '1.0.2'
     repositories {
         mavenCentral()
         maven {
             name = "github"
-            url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
+            url = uri("https://maven.pkg.github.com/maslynem/BoardWorld")
             credentials {
                 username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("githubUsername") ?: ""
                 password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""
@@ -71,7 +71,7 @@ subprojects {
         repositories {
             maven {
                 name = "github"
-                url = uri("https://maven.pkg.github.com/maslynem/DigitalYard")
+                url = uri("https://maven.pkg.github.com/maslynem/BoardWorld")
                 credentials {
                     username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("githubUsername") ?: ""
                     password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("githubToken") ?: ""

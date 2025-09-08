@@ -1,6 +1,6 @@
-# dy-commons
+# bw-commons
 
-`dy-commons` — это набор Spring Boot стартеров, которые предоставляют общие функциональные возможности для сервисов
+`bw-commons` — это набор Spring Boot стартеров, которые предоставляют общие функциональные возможности для сервисов
 Digital Yard.
 
 ## Доступные стартеры
@@ -49,9 +49,9 @@ Digital Yard.
 Каждый стартер подключается через Gradle/Maven по отдельности:
 
 ```groovy
-implementation "ru.digitalyard.commons:rest-commons-starter:1.0.2"
-implementation "ru.digitalyard.commons:web-security-starter:1.0.2"
-implementation "ru.digitalyard.commons:tracing-starter:1.0.2"
+implementation "ru.boardworld.commons:rest-commons-starter:1.0.2"
+implementation "ru.boardworld.commons:web-security-starter:1.0.2"
+implementation "ru.boardworld.commons:tracing-starter:1.0.2"
 ```
 
 ## Быстрый справочник
@@ -100,13 +100,13 @@ implementation "ru.digitalyard.commons:tracing-starter:1.0.2"
 
 | Переменная                                    | По умолчанию                                  | Соответствующая property                 | Описание                                                                                   |
 |-----------------------------------------------|-----------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------|
-| `DY_AUTH_PUBLIC_KEY_PATH`                     | `classpath:public.key`                        | `dy.auth.public-key-path`                | Путь к файлу публичного ключа (X.509). Поддерживает форматы `classpath:`, `file:`, `http:` |
-| `DY_AUTH_WEB_SECURITY_PERMISSIONS`            | `[]`                                          | `dy.web-security.permissions`            | Массив URL-шаблонов, доступных без аутентификации                                          |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_ORIGINS`   | `["*"]`                                       | `dy.web-security.cors.allowed-origins`   | Разрешенные домены для CORS                                                                |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_METHODS`   | `["GET", "POST", "PUT", "DELETE", "OPTIONS"]` | `dy.web-security.cors.allowed-methods`   | Разрешенные HTTP-методы                                                                    |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOWED_HEADERS`   | `["*"]`                                       | `dy.web-security.cors.allowed-headers`   | Разрешенные заголовки запроса                                                              |
-| `DY_AUTH_WEB_SECURITY_CORS_ALLOW_CREDENTIALS` | `false`                                       | `dy.web-security.cors.allow-credentials` | Разрешение передачи cookies                                                                |
-| `DY_AUTH_WEB_SECURITY_CORS_MAX_AGE`           | `1h`                                          | `dy.web-security.cors.max-age`           | Время кэширования CORS-префлайт запросов                                                   |
+| `BW_AUTH_PUBLIC_KEY_PATH`                     | `classpath:public.key`                        | `bw.auth.public-key-path`                | Путь к файлу публичного ключа (X.509). Поддерживает форматы `classpath:`, `file:`, `http:` |
+| `BW_AUTH_WEB_SECURITY_PERMISSIONS`            | `[]`                                          | `bw.web-security.permissions`            | Массив URL-шаблонов, доступных без аутентификации                                          |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_ORIGINS`   | `["*"]`                                       | `bw.web-security.cors.allowed-origins`   | Разрешенные домены для CORS                                                                |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_METHODS`   | `["GET", "POST", "PUT", "DELETE", "OPTIONS"]` | `bw.web-security.cors.allowed-methods`   | Разрешенные HTTP-методы                                                                    |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOWED_HEADERS`   | `["*"]`                                       | `bw.web-security.cors.allowed-headers`   | Разрешенные заголовки запроса                                                              |
+| `BW_AUTH_WEB_SECURITY_CORS_ALLOW_CREDENTIALS` | `false`                                       | `bw.web-security.cors.allow-credentials` | Разрешение передачи cookies                                                                |
+| `BW_AUTH_WEB_SECURITY_CORS_MAX_AGE`           | `1h`                                          | `bw.web-security.cors.max-age`           | Время кэширования CORS-префлайт запросов                                                   |
 
 #### tracing-starter
 
@@ -141,7 +141,7 @@ implementation "ru.digitalyard.commons:tracing-starter:1.0.2"
 ## Структура проекта
 
 ```
-dy-commons/
+bw-commons/
 ├── rest-commons-starter/
 │   └── README.md
 ├── web-security-starter/

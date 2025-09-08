@@ -1,2 +1,2 @@
-dy.digitalyard.commons.tracing.TracingAutoConfiguration
-dy.digitalyard.commons.logging.OpenTelemetryAppenderConfiguration
+tracing.ru.boardworld.commons.TracingAutoConfiguration
+logging.ru.boardworld.commons.OpenTelemetryAppenderConfiguration
