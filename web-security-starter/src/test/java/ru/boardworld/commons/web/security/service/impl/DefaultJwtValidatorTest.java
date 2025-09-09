@@ -3,7 +3,7 @@ package ru.boardworld.commons.web.security.service.impl;
 import ru.boardworld.commons.web.security.config.properties.AuthProperties;
 import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
 import ru.boardworld.commons.web.security.exception.token.TokenExpiredException;
-import ru.boardworld.commons.web.security.service.PubKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,8 +39,8 @@ class DefaultJwtValidatorTest {
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
 
-        PubKeyLoader loader = mock(PubKeyLoader.class);
-        when(loader.loadPubKey("classpath:some")).thenReturn(publicKey);
+        PublicKeyLoader loader = mock(PublicKeyLoader.class);
+        when(loader.loadPublicKey("classpath:some")).thenReturn(publicKey);
 
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");
@@ -66,8 +66,8 @@ class DefaultJwtValidatorTest {
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
 
-        PubKeyLoader loader = mock(PubKeyLoader.class);
-        when(loader.loadPubKey("classpath:some")).thenReturn(publicKey);
+        PublicKeyLoader loader = mock(PublicKeyLoader.class);
+        when(loader.loadPublicKey("classpath:some")).thenReturn(publicKey);
 
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");
@@ -94,8 +94,8 @@ class DefaultJwtValidatorTest {
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
 
-        PubKeyLoader loader = mock(PubKeyLoader.class);
-        when(loader.loadPubKey("classpath:some")).thenReturn(otherPublicKey);
+        PublicKeyLoader loader = mock(PublicKeyLoader.class);
+        when(loader.loadPublicKey("classpath:some")).thenReturn(otherPublicKey);
 
         AuthProperties props = new AuthProperties();
         props.setPublicKeyPath("classpath:some");

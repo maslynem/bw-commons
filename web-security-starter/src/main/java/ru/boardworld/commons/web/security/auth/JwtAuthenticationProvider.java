@@ -41,10 +41,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         log.debug("JWT claims were extracted: {}", claims);
 
         UUID id = UUID.fromString(getRequiredClaim(claims, Claims.SUBJECT, String.class));
-        String login = getRequiredClaim(claims, Constants.LOGIN.name(), String.class);
-        String firstName = getRequiredClaim(claims, Constants.FIRST_NAME.name(), String.class);
-        String middleName = getRequiredClaim(claims, Constants.MIDDLE_NAME.name(), String.class);
-        String lastName = getRequiredClaim(claims, Constants.LAST_NAME.name(), String.class);
+        String username = getRequiredClaim(claims, Constants.USERNAME.name(), String.class);
         @SuppressWarnings("unchecked")
         List<String> rolesString = getRequiredClaim(claims, Constants.USER_RIGHTS.name(), List.class);
         List<Role> rolesList = rolesString.stream()
@@ -53,10 +50,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         return AuthenticatedUser.builder()
                 .id(id)
-                .login(login)
-                .firstName(firstName)
-                .middleName(middleName)
-                .lastName(lastName)
+                .username(username)
                 .roles(rolesList)
                 .build();
     }

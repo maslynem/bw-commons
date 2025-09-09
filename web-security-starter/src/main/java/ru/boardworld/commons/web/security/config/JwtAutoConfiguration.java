@@ -8,9 +8,9 @@ import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import ru.boardworld.commons.web.security.auth.JwtAuthenticationProvider;
 import ru.boardworld.commons.web.security.config.properties.AuthProperties;
 import ru.boardworld.commons.web.security.service.JwtValidator;
-import ru.boardworld.commons.web.security.service.PubKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import ru.boardworld.commons.web.security.service.impl.DefaultJwtValidator;
-import ru.boardworld.commons.web.security.service.impl.X509PubKeyLoader;
+import ru.boardworld.commons.web.security.service.impl.PemKeyLoader;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,14 +25,14 @@ public class JwtAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public PubKeyLoader pubKeyLoader(ResourceLoader resourceLoader) {
-        return new X509PubKeyLoader(resourceLoader);
+    public PublicKeyLoader pubKeyLoader(ResourceLoader resourceLoader) {
+        return new PemKeyLoader(resourceLoader);
     }
 
 
     @Bean
-    public JwtValidator jwtValidator(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
-        return new DefaultJwtValidator(authProperties, pubKeyLoader);
+    public JwtValidator jwtValidator(AuthProperties authProperties, PublicKeyLoader publicKeyLoader) {
+        return new DefaultJwtValidator(authProperties, publicKeyLoader);
     }
 
 

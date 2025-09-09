@@ -4,7 +4,7 @@ import ru.boardworld.commons.web.security.config.properties.AuthProperties;
 import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
 import ru.boardworld.commons.web.security.exception.token.TokenExpiredException;
 import ru.boardworld.commons.web.security.service.JwtValidator;
-import ru.boardworld.commons.web.security.service.PubKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -21,8 +21,8 @@ public class DefaultJwtValidator implements JwtValidator {
 
     private final PublicKey pubKey;
 
-    public DefaultJwtValidator(AuthProperties authProperties, PubKeyLoader pubKeyLoader) {
-        this.pubKey = pubKeyLoader.loadPubKey(authProperties.getPublicKeyPath());
+    public DefaultJwtValidator(AuthProperties authProperties, PublicKeyLoader publicKeyLoader) {
+        this.pubKey = publicKeyLoader.loadPublicKey(authProperties.getPublicKeyPath());
     }
 
     @Override

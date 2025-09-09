@@ -8,7 +8,7 @@ import ru.boardworld.commons.rest.exception.handler.ApiErrorFactory;
 import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
 import ru.boardworld.commons.rest.exception.logger.Slf4jApiErrorLogger;
 import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
-import ru.boardworld.commons.web.security.service.PubKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -59,10 +59,10 @@ public class TestConfig {
     }
 
     @Bean
-    public PubKeyLoader pubKeyLoader(KeyPair keyPair) {
-        PubKeyLoader loader = Mockito.mock(PubKeyLoader.class);
+    public PublicKeyLoader pubKeyLoader(KeyPair keyPair) {
+        PublicKeyLoader loader = Mockito.mock(PublicKeyLoader.class);
         PublicKey publicKey = keyPair.getPublic();
-        Mockito.when(loader.loadPubKey(Mockito.anyString())).thenReturn(publicKey);
+        Mockito.when(loader.loadPublicKey(Mockito.anyString())).thenReturn(publicKey);
         return loader;
     }
 

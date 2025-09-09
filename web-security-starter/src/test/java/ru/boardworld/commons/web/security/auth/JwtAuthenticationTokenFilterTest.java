@@ -67,7 +67,7 @@ public class JwtAuthenticationTokenFilterTest {
     @Test
     void whenValidToken_thenAccessSecuredEndpoint() throws Exception {
         String token = buildToken(privateKey, builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(false, false))
+                .setClaims(ClaimsUtils.createMockClaims())
                 .setSubject(UUID.randomUUID().toString())
                 .setExpiration(Date.from(Instant.now().plusSeconds(60))));
 
@@ -87,7 +87,7 @@ public class JwtAuthenticationTokenFilterTest {
     @Test
     void whenExpiredToken_thenUnauthorizedApiError() throws Exception {
         String token = buildToken(privateKey, builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(false, false))
+                .setClaims(ClaimsUtils.createMockClaims())
                 .setExpiration(Date.from(Instant.now().minusSeconds(10))));
 
         mockMvc.perform(get(TestConfig.SECURE_URL)
@@ -112,7 +112,7 @@ public class JwtAuthenticationTokenFilterTest {
     void whenTokenSignedByOtherKey_thenUnauthorizedApiError() throws Exception {
         KeyPair other = generateRsa();
         String token = buildToken(other.getPrivate(), builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(false, false))
+                .setClaims(ClaimsUtils.createMockClaims())
                 .setExpiration(Date.from(Instant.now().plusSeconds(60))));
 
         mockMvc.perform(get(TestConfig.SECURE_URL)
@@ -127,7 +127,7 @@ public class JwtAuthenticationTokenFilterTest {
     @Test
     void whenValidToken_butNotEnoughRights_thenForbiddenApiError() throws Exception {
         String token = buildToken(privateKey, builder -> builder
-                .setClaims(ClaimsUtils.createMockClaims(false, false))
+                .setClaims(ClaimsUtils.createMockClaims())
                 .setExpiration(Date.from(Instant.now().plusSeconds(60))));
 
         mockMvc.perform(get(TestConfig.ADMIN_URL)

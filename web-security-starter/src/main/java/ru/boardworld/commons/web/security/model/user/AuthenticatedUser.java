@@ -19,10 +19,7 @@ import java.util.UUID;
 public class AuthenticatedUser implements UserDetails {
 
     private UUID id;
-    private String login;
-    private String firstName;
-    private String lastName;
-    private String middleName;
+    private String username;
     private List<Role> roles;
 
     @JsonIgnore
@@ -40,7 +37,7 @@ public class AuthenticatedUser implements UserDetails {
     @JsonIgnore
     @Override
     public String getUsername() {
-        return this.login;
+        return this.username;
     }
 
     @JsonIgnore
