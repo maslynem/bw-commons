@@ -1,2 +1,2 @@
-tracing.ru.boardworld.commons.TracingAutoConfiguration
-logging.ru.boardworld.commons.OpenTelemetryAppenderConfiguration
+ru.boardworld.commons.tracing.TracingAutoConfiguration
+ru.boardworld.commons.logging.OpenTelemetryAppenderConfiguration

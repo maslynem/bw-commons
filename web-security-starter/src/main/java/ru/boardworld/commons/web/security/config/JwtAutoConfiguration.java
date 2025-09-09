@@ -1,16 +1,6 @@
 package ru.boardworld.commons.web.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.boardworld.commons.rest.exception.handler.ApiErrorFactory;
-import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
-import ru.boardworld.commons.web.security.auth.ForbiddenEntryPoint;
-import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
-import ru.boardworld.commons.web.security.auth.JwtAuthenticationProvider;
-import ru.boardworld.commons.web.security.config.properties.AuthProperties;
-import ru.boardworld.commons.web.security.service.JwtValidator;
-import ru.boardworld.commons.web.security.service.PublicKeyLoader;
-import ru.boardworld.commons.web.security.service.impl.DefaultJwtValidator;
-import ru.boardworld.commons.web.security.service.impl.PemKeyLoader;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,6 +8,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import ru.boardworld.commons.rest.exception.handler.ApiErrorFactory;
+import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
+import ru.boardworld.commons.web.security.auth.ForbiddenEntryPoint;
+import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
+import ru.boardworld.commons.web.security.auth.JwtAuthenticationProvider;
+import ru.boardworld.commons.web.security.config.properties.AuthProperties;
+import ru.boardworld.commons.web.security.service.JwtValidator;
+import ru.boardworld.commons.web.security.service.PrivateKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
+import ru.boardworld.commons.web.security.service.impl.DefaultJwtValidator;
+import ru.boardworld.commons.web.security.service.impl.PemKeyLoader;
 
 @AutoConfiguration
 @EnableConfigurationProperties(AuthProperties.class)
@@ -25,10 +26,15 @@ public class JwtAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public PublicKeyLoader pubKeyLoader(ResourceLoader resourceLoader) {
+    public PublicKeyLoader publicKeyLoader(ResourceLoader resourceLoader) {
         return new PemKeyLoader(resourceLoader);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public PrivateKeyLoader privateKeyLoader(ResourceLoader resourceLoader) {
+        return new PemKeyLoader(resourceLoader);
+    }
 
     @Bean
     public JwtValidator jwtValidator(AuthProperties authProperties, PublicKeyLoader publicKeyLoader) {
