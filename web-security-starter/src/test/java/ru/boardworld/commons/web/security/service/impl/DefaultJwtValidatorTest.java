@@ -1,13 +1,13 @@
 package ru.boardworld.commons.web.security.service.impl;
 
-import ru.boardworld.commons.web.security.config.properties.AuthProperties;
-import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
-import ru.boardworld.commons.web.security.exception.token.TokenExpiredException;
-import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
+import ru.boardworld.commons.web.security.config.properties.AuthProperties;
+import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
+import ru.boardworld.commons.web.security.exception.token.TokenExpiredException;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -27,7 +27,7 @@ class DefaultJwtValidatorTest {
     private static final String LOGIN = "test_login";
 
     @Test
-    void validateAccessToken_success_withRealRSA() throws Exception {
+    void validateToken_success_withRealRSA() throws Exception {
         KeyPair kp = generateRsaKeyPair();
         PrivateKey privateKey = kp.getPrivate();
         PublicKey publicKey = kp.getPublic();
@@ -47,14 +47,14 @@ class DefaultJwtValidatorTest {
 
         DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
-        Claims claims = service.validateAccessToken(token);
+        Claims claims = service.validateToken(token);
         assertThat(claims).isNotNull();
         assertThat(claims.getSubject()).isEqualTo(SUBJECT);
         assertThat(claims.get("LOGIN", String.class)).isEqualTo(LOGIN);
     }
 
     @Test
-    void validateAccessToken_throwsTokenExpiredException_forExpiredToken() throws Exception {
+    void validateToken_throwsTokenExpiredException_forExpiredToken() throws Exception {
         KeyPair kp = generateRsaKeyPair();
         PrivateKey privateKey = kp.getPrivate();
         PublicKey publicKey = kp.getPublic();
@@ -74,12 +74,12 @@ class DefaultJwtValidatorTest {
 
         DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
-        assertThatThrownBy(() -> service.validateAccessToken(token))
+        assertThatThrownBy(() -> service.validateToken(token))
                 .isInstanceOf(TokenExpiredException.class);
     }
 
     @Test
-    void validateAccessToken_throwsInvalidTokenException_forWrongSignature() throws Exception {
+    void validateToken_throwsInvalidTokenException_forWrongSignature() throws Exception {
         // Создадим два keypair — подпишем одним, а при валидации дадим другой публичный ключ
         KeyPair kpSigner = generateRsaKeyPair();
         PrivateKey privateKey = kpSigner.getPrivate();
@@ -102,7 +102,7 @@ class DefaultJwtValidatorTest {
 
         DefaultJwtValidator service = new DefaultJwtValidator(props, loader);
 
-        assertThatThrownBy(() -> service.validateAccessToken(token))
+        assertThatThrownBy(() -> service.validateToken(token))
                 .isInstanceOf(InvalidTokenException.class);
     }
 

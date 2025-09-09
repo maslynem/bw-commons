@@ -1,8 +1,5 @@
 package ru.boardworld.commons.web.security.config;
 
-import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
-import ru.boardworld.commons.web.security.auth.JwtAuthenticationTokenFilter;
-import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +16,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
+import ru.boardworld.commons.web.security.auth.JwtAuthenticationTokenFilter;
+import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
+
+import java.util.List;
 
 @AutoConfiguration
 @EnableWebSecurity
@@ -32,6 +34,7 @@ public class SecurityAutoConfiguration {
     private final CorsConfigurationSource corsConfigurationSource;
     private final WebSecurityProperties webSecurityProperties;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final List<HttpSecurityCustomizer> customizers;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -76,6 +79,10 @@ public class SecurityAutoConfiguration {
 
                 // 8. Настройка security headers (после исключений)
                 .headers(Customizer.withDefaults());
+
+        for (HttpSecurityCustomizer customizer : customizers) {
+            customizer.customize(http);
+        }
         return http.build();
     }
 }
