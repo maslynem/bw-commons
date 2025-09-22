@@ -1,17 +1,17 @@
 package ru.boardworld.commons.web.security.auth;
 
-import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
-import ru.boardworld.commons.web.security.model.JwtAuthenticationToken;
-import ru.boardworld.commons.web.security.model.user.AuthenticatedUser;
-import ru.boardworld.commons.web.security.model.user.Constants;
-import ru.boardworld.commons.web.security.model.user.Role;
-import ru.boardworld.commons.web.security.service.JwtValidator;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
+import ru.boardworld.commons.web.security.model.JwtAuthenticationToken;
+import ru.boardworld.commons.web.security.model.user.AuthenticatedUser;
+import ru.boardworld.commons.web.security.model.user.Constants;
+import ru.boardworld.commons.web.security.model.user.Role;
+import ru.boardworld.commons.web.security.service.JwtValidator;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,14 +37,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private AuthenticatedUser getUser(JwtAuthenticationToken jwtAuthenticationToken) {
         log.debug("Validating JWT");
 
-        Claims claims = jwtValidator.validateAccessToken(jwtAuthenticationToken.getJwtToken());
+        Claims claims = jwtValidator.validateToken(jwtAuthenticationToken.getJwtToken());
         log.debug("JWT claims were extracted: {}", claims);
 
         UUID id = UUID.fromString(getRequiredClaim(claims, Claims.SUBJECT, String.class));
-        String login = getRequiredClaim(claims, Constants.LOGIN.name(), String.class);
-        String firstName = getRequiredClaim(claims, Constants.FIRST_NAME.name(), String.class);
-        String middleName = getRequiredClaim(claims, Constants.MIDDLE_NAME.name(), String.class);
-        String lastName = getRequiredClaim(claims, Constants.LAST_NAME.name(), String.class);
+        String username = getRequiredClaim(claims, Constants.USERNAME.name(), String.class);
         @SuppressWarnings("unchecked")
         List<String> rolesString = getRequiredClaim(claims, Constants.USER_RIGHTS.name(), List.class);
         List<Role> rolesList = rolesString.stream()
@@ -53,10 +50,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         return AuthenticatedUser.builder()
                 .id(id)
-                .login(login)
-                .firstName(firstName)
-                .middleName(middleName)
-                .lastName(lastName)
+                .username(username)
                 .roles(rolesList)
                 .build();
     }
