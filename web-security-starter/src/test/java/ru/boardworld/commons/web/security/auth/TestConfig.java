@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.boardworld.commons.rest.exception.handler.ApiErrorFactory;
 import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
 import ru.boardworld.commons.rest.exception.logger.Slf4jApiErrorLogger;
 import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
 import ru.boardworld.commons.web.security.service.PublicKeyLoader;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -59,6 +60,7 @@ public class TestConfig {
     }
 
     @Bean
+    @Primary
     public PublicKeyLoader pubKeyLoader(KeyPair keyPair) {
         PublicKeyLoader loader = Mockito.mock(PublicKeyLoader.class);
         PublicKey publicKey = keyPair.getPublic();

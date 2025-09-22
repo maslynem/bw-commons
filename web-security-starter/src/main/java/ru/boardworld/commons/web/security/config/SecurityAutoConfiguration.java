@@ -2,11 +2,12 @@ package ru.boardworld.commons.web.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,23 +27,23 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@AutoConfigureBefore(org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)
 public class SecurityAutoConfiguration {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-    private final AuthenticationProvider jwtAuthenticationProvider;
     private final CorsConfigurationSource corsConfigurationSource;
     private final WebSecurityProperties webSecurityProperties;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final List<HttpSecurityCustomizer> customizers;
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> providers) {
+        return new ProviderManager(providers);
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthenticationManager authenticationManager) throws Exception {
+
         http
                 // 1. Отключение ненужных функций
                 .csrf(AbstractHttpConfigurer::disable)
@@ -62,12 +63,9 @@ public class SecurityAutoConfiguration {
                         .anyRequest().authenticated()
                 )
 
-                // 5. Добавление кастомного провайдера
-                .authenticationProvider(jwtAuthenticationProvider)
-
                 // 6. Добавление кастомного фильтра
                 .addFilterBefore(
-                        new JwtAuthenticationTokenFilter(authenticationManager(), jwtAuthenticationEntryPoint),
+                        new JwtAuthenticationTokenFilter(authenticationManager, jwtAuthenticationEntryPoint),
                         UsernamePasswordAuthenticationFilter.class
                 )
 
@@ -80,9 +78,6 @@ public class SecurityAutoConfiguration {
                 // 8. Настройка security headers (после исключений)
                 .headers(Customizer.withDefaults());
 
-        for (HttpSecurityCustomizer customizer : customizers) {
-            customizer.customize(http);
-        }
         return http.build();
     }
 }

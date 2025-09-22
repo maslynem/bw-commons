@@ -2,7 +2,7 @@ package ru.boardworld.commons.web.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
@@ -15,24 +15,17 @@ import ru.boardworld.commons.web.security.auth.JwtAuthenticationEntryPoint;
 import ru.boardworld.commons.web.security.auth.JwtAuthenticationProvider;
 import ru.boardworld.commons.web.security.config.properties.AuthProperties;
 import ru.boardworld.commons.web.security.service.JwtValidator;
-import ru.boardworld.commons.web.security.service.PrivateKeyLoader;
 import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import ru.boardworld.commons.web.security.service.impl.DefaultJwtValidator;
 import ru.boardworld.commons.web.security.service.impl.PemKeyLoader;
 
 @AutoConfiguration
 @EnableConfigurationProperties(AuthProperties.class)
+@AutoConfigureBefore(SecurityAutoConfiguration.class)
 public class JwtAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
-    public PublicKeyLoader publicKeyLoader(ResourceLoader resourceLoader) {
-        return new PemKeyLoader(resourceLoader);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public PrivateKeyLoader privateKeyLoader(ResourceLoader resourceLoader) {
+    public PemKeyLoader pemKeyLoader(ResourceLoader resourceLoader) {
         return new PemKeyLoader(resourceLoader);
     }
 
@@ -56,5 +49,6 @@ public class JwtAutoConfiguration {
     public AccessDeniedHandler accessDeniedHandler(ObjectMapper objectMapper, ApiErrorLogger apiErrorLogger, ApiErrorFactory apiErrorFactory) {
         return new ForbiddenEntryPoint(apiErrorFactory, apiErrorLogger, objectMapper);
     }
+
 
 }

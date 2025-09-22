@@ -20,6 +20,7 @@ public class AuthenticatedUser implements UserDetails {
 
     private UUID id;
     private String username;
+    private String passwordHash;
     private List<Role> roles;
 
     @JsonIgnore
@@ -31,7 +32,7 @@ public class AuthenticatedUser implements UserDetails {
     @JsonIgnore
     @Override
     public String getPassword() {
-        return null;
+        return passwordHash;
     }
 
     @JsonIgnore

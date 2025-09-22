@@ -1,7 +1,5 @@
 package ru.boardworld.commons.rest.integration.handler;
 
-import ru.boardworld.commons.rest.exception.exception.db.EntityNotFoundException;
-import ru.boardworld.commons.rest.exception.exception.internal.InternalServerUnavailableException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,8 +11,8 @@ import lombok.experimental.FieldNameConstants;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import ru.boardworld.commons.rest.exception.exception.db.EntityNotFoundException;
+import ru.boardworld.commons.rest.exception.exception.internal.InternalServerUnavailableException;
 
 @TestConfiguration
 public class TestConfig {
@@ -66,7 +64,7 @@ public class TestConfig {
 
         @GetMapping(ENTITY_NOT_FOUND_URL)
         public void throwEntityNotFound() {
-            throw new EntityNotFoundException(TEST_RESOURCE, UUID.randomUUID());
+            throw new EntityNotFoundException(TEST_RESOURCE, "");
         }
 
         @GetMapping(INTERNAL_UNAVAILABLE_URL)

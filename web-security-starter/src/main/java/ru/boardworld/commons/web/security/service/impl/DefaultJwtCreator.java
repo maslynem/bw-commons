@@ -37,9 +37,7 @@ public class DefaultJwtCreator implements JwtCreator {
         OffsetDateTime expiry = now.plus(authProperties.getAccessTokenTtl());
         Claims claims = generateClaims(authenticatedUser);
 
-
         String token = Jwts.builder()
-                .setSubject(authenticatedUser.getId().toString())
                 .setClaims(claims)
                 .setIssuedAt(Date.from(now.toInstant()))
                 .setExpiration(Date.from(expiry.toInstant()))
@@ -74,6 +72,7 @@ public class DefaultJwtCreator implements JwtCreator {
 
     public Claims generateClaims(AuthenticatedUser authenticatedUser) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put(Claims.SUBJECT, authenticatedUser.getId());
         claims.put(Constants.USERNAME.name(), authenticatedUser.getUsername());
         List<String> roles = authenticatedUser.getRoles().stream().map(Role::getName).toList();
         claims.put(Constants.USER_RIGHTS.name(), roles);
