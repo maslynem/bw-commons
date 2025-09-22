@@ -1,17 +1,19 @@
 package ru.boardworld.commons.web.security.config;
 
-import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.boardworld.commons.web.security.config.properties.WebSecurityProperties;
 
 import java.util.Arrays;
 
 @AutoConfiguration
 @EnableConfigurationProperties(WebSecurityProperties.class)
+@AutoConfigureBefore(SecurityAutoConfiguration.class)
 public class CorsAutoConfiguration {
 
     @Bean

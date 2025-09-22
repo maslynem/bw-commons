@@ -30,7 +30,7 @@ public class ForbiddenEntryPoint implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException {
         AuthenticatedUser principal = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String path = request.getPathInfo();
-        ForbiddenDetails details = new ForbiddenDetails(principal.getLogin(), path);
+        ForbiddenDetails details = new ForbiddenDetails(principal.getUsername(), path);
 
         ApiError apiError = apiErrorFactory.create(SecurityErrorCode.FORBIDDEN, details);
         apiErrorLogger.logError(apiError, accessDeniedException, request);

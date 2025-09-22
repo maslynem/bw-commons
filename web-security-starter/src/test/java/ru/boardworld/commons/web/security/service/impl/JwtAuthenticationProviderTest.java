@@ -1,5 +1,12 @@
 package ru.boardworld.commons.web.security.service.impl;
 
+import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
 import ru.boardworld.commons.rest.exception.model.ApiErrorDetails;
 import ru.boardworld.commons.web.security.auth.JwtAuthenticationProvider;
 import ru.boardworld.commons.web.security.exception.token.InvalidTokenException;
@@ -10,13 +17,6 @@ import ru.boardworld.commons.web.security.model.user.Constants;
 import ru.boardworld.commons.web.security.model.user.Role;
 import ru.boardworld.commons.web.security.service.JwtValidator;
 import ru.boardworld.commons.web.security.utils.ClaimsUtils;
-import io.jsonwebtoken.Claims;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,8 +27,8 @@ public class JwtAuthenticationProviderTest {
 
     @Test
     void getUser_success() {
-        Claims claims = ClaimsUtils.createMockClaims(false, false);
-        Mockito.when(jwtValidator.validateAccessToken("valid-token")).thenReturn(claims);
+        Claims claims = ClaimsUtils.createMockClaims();
+        Mockito.when(jwtValidator.validateToken("valid-token")).thenReturn(claims);
 
         Authentication jwtAuthToken = provider.authenticate(new JwtAuthenticationToken("valid-token"));
         Assertions.assertInstanceOf(AuthenticatedUser.class, jwtAuthToken.getPrincipal());
@@ -36,20 +36,18 @@ public class JwtAuthenticationProviderTest {
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.getId().toString()).isEqualTo(ClaimsUtils.M_ID);
-        assertThat(authenticatedUser.getLogin()).isEqualTo(ClaimsUtils.M_LOGIN);
-        assertThat(authenticatedUser.getFirstName()).isEqualTo(ClaimsUtils.M_FIRST_NAME);
-        assertThat(authenticatedUser.getLastName()).isEqualTo(ClaimsUtils.M_LAST_NAME);
+        assertThat(authenticatedUser.getUsername()).isEqualTo(ClaimsUtils.M_USERNAME);
         assertThat(authenticatedUser.getRoles().stream().map(Role::getName).toList()).isEqualTo(ClaimsUtils.M_ROLES);
     }
 
     @ParameterizedTest
-    @EnumSource(value = Constants.class, names = {"LOGIN", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "USER_RIGHTS"})
+    @EnumSource(value = Constants.class, names = {"USERNAME", "USER_RIGHTS"})
     void getUser_missingClaim_shouldThrowInvalidTokenException(Constants missingClaim) {
-        Claims claims = ClaimsUtils.createMockClaims(false, false);
+        Claims claims = ClaimsUtils.createMockClaims();
 
         claims.remove(missingClaim.name());
 
-        Mockito.when(jwtValidator.validateAccessToken("token")).thenReturn(claims);
+        Mockito.when(jwtValidator.validateToken("token")).thenReturn(claims);
 
         JwtAuthenticationToken token = new JwtAuthenticationToken("token");
 

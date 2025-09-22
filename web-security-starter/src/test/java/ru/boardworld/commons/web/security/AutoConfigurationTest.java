@@ -7,7 +7,7 @@ import ru.boardworld.commons.web.security.config.CorsAutoConfiguration;
 import ru.boardworld.commons.web.security.config.JwtAutoConfiguration;
 import ru.boardworld.commons.web.security.config.SecurityAutoConfiguration;
 import ru.boardworld.commons.web.security.service.JwtValidator;
-import ru.boardworld.commons.web.security.service.PubKeyLoader;
+import ru.boardworld.commons.web.security.service.PublicKeyLoader;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -27,7 +27,7 @@ class AutoConfigurationTest {
                     SecurityAutoConfiguration.class))
             // указываем реальный файл сертификата из ресурсов модуля
             .withPropertyValues(
-                    "bw.auth.public-key-path=classpath:test-public-key.crt",
+                    "bw.auth.public-key-path=classpath:test-public.key",
                     "bw.web-security.permissions[0]=/actuator/health"
             )
             .withBean(ObjectMapper.class, ObjectMapper::new)
@@ -40,7 +40,7 @@ class AutoConfigurationTest {
         contextRunner.run(context -> {
             assertThat(context).hasNotFailed();
 
-            assertThat(context).hasSingleBean(PubKeyLoader.class);
+            assertThat(context).hasSingleBean(PublicKeyLoader.class);
             assertThat(context).hasSingleBean(JwtValidator.class);
             assertThat(context).hasSingleBean(CorsConfiguration.class);
             assertThat(context).hasSingleBean(CorsConfigurationSource.class);

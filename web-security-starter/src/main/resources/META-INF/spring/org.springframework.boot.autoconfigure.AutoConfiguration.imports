@@ -1,3 +1,3 @@
-config.ru.boardworld.commons.web.security.JwtAutoConfiguration
-config.ru.boardworld.commons.web.security.CorsAutoConfiguration
-config.ru.boardworld.commons.web.security.SecurityAutoConfiguration
+ru.boardworld.commons.web.security.config.JwtAutoConfiguration
+ru.boardworld.commons.web.security.config.CorsAutoConfiguration
+ru.boardworld.commons.web.security.config.SecurityAutoConfiguration
