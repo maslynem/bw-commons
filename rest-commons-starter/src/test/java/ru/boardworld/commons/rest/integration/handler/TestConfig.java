@@ -27,6 +27,7 @@ public class TestConfig {
     public static final String ARGUMENT_NOT_VALID_URL = "/test/not-valid";
     public static final String METHOD_NOT_SUPPORTED_URL = "/test/method-not-supported";
     public static final String ENTITY_NOT_FOUND_URL = "/test/entity-not-found";
+    public static final String MOCK_ENTITY_NAME = "MOCK_ENTITY_NAME";
     public static final String INTERNAL_UNAVAILABLE_URL = "/test/internal-unavailable";
     public static final String GENERIC_URL = "/test/generic";
     public static final String HTTP_MESSAGE_NOT_READABLE_URL = "/test/message-not-readable";
@@ -64,7 +65,7 @@ public class TestConfig {
 
         @GetMapping(ENTITY_NOT_FOUND_URL)
         public void throwEntityNotFound() {
-            throw new EntityNotFoundException(TEST_RESOURCE, "");
+            throw new EntityNotFoundException(TEST_RESOURCE, MOCK_ENTITY_NAME);
         }
 
         @GetMapping(INTERNAL_UNAVAILABLE_URL)

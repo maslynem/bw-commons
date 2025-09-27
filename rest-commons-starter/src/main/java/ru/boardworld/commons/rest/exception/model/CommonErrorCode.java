@@ -1,7 +1,7 @@
 package ru.boardworld.commons.rest.exception.model;
 
-import ru.boardworld.commons.rest.exception.model.details.*;
 import org.springframework.http.HttpStatus;
+import ru.boardworld.commons.rest.exception.model.details.*;
 
 public enum CommonErrorCode implements ErrorCode {
 
@@ -30,6 +30,11 @@ public enum CommonErrorCode implements ErrorCode {
     CommonErrorCode(Class<? extends ApiErrorDetails> detailsClass, HttpStatus defaultHttpStatus) {
         this.detailsClass = detailsClass;
         this.defaultHttpStatus = defaultHttpStatus;
+    }
+
+    @Override
+    public String getCodeName() {
+        return this.name();
     }
 
     @Override

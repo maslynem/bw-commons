@@ -3,13 +3,9 @@ package ru.boardworld.commons.rest.exception.model;
 import org.springframework.http.HttpStatus;
 
 public interface ErrorCode {
-    String name();
-
-    default String getCode() {
-        return name();
-    }
+    String getCodeName();
 
     HttpStatus getHttpStatus();
 
-     Class<? extends ApiErrorDetails> getDetailsClass();
+    Class<? extends ApiErrorDetails> getDetailsClass();
 }

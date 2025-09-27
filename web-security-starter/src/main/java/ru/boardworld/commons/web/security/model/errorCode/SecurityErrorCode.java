@@ -1,9 +1,9 @@
 package ru.boardworld.commons.web.security.model.errorCode;
 
+import org.springframework.http.HttpStatus;
 import ru.boardworld.commons.rest.exception.model.ApiErrorDetails;
 import ru.boardworld.commons.rest.exception.model.ErrorCode;
 import ru.boardworld.commons.web.security.model.errorCode.details.*;
-import org.springframework.http.HttpStatus;
 
 public enum SecurityErrorCode implements ErrorCode {
     // Ошибки аутентификации/авторизации (4xx)
@@ -31,5 +31,10 @@ public enum SecurityErrorCode implements ErrorCode {
     @Override
     public Class<? extends ApiErrorDetails> getDetailsClass() {
         return details;
+    }
+
+    @Override
+    public String getCodeName() {
+        return this.name();
     }
 }

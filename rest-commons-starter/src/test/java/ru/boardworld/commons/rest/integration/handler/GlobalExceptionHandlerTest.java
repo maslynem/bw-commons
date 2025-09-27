@@ -1,12 +1,6 @@
 package ru.boardworld.commons.rest.integration.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.boardworld.commons.rest.exception.config.ApiErrorConfiguration;
-import ru.boardworld.commons.rest.exception.config.ExceptionHandlerConfiguration;
-import ru.boardworld.commons.rest.exception.model.ApiError;
-import ru.boardworld.commons.rest.exception.model.CommonErrorCode;
-import ru.boardworld.commons.rest.exception.model.details.*;
-import ru.boardworld.commons.rest.jackson.ObjectMapperConfiguration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.boardworld.commons.rest.exception.config.ApiErrorConfiguration;
+import ru.boardworld.commons.rest.exception.config.ExceptionHandlerConfiguration;
+import ru.boardworld.commons.rest.exception.model.ApiError;
+import ru.boardworld.commons.rest.exception.model.CommonErrorCode;
+import ru.boardworld.commons.rest.exception.model.details.*;
+import ru.boardworld.commons.rest.jackson.ObjectMapperConfiguration;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.anEmptyMap;
@@ -141,7 +141,7 @@ class GlobalExceptionHandlerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(format("$.%s", CODE)).value(CommonErrorCode.ENTITY_NOT_FOUND.name()))
                 .andExpect(jsonPath(format("$.%s.%s", DETAILS, EntityNotFoundDetails.Fields.resourceType)).value(TestConfig.TEST_RESOURCE))
-                .andExpect(jsonPath(format("$.%s.%s", DETAILS, EntityNotFoundDetails.Fields.id)).isNotEmpty());
+                .andExpect(jsonPath(format("$.%s.%s", DETAILS, EntityNotFoundDetails.Fields.value)).value(TestConfig.MOCK_ENTITY_NAME));
     }
 
     @Test
