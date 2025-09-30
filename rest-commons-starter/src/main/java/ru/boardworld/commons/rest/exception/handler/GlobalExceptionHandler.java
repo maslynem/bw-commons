@@ -1,14 +1,5 @@
 package ru.boardworld.commons.rest.exception.handler;
 
-import ru.boardworld.commons.rest.exception.exception.AbstractApiException;
-import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
-import ru.boardworld.commons.rest.exception.mapper.ExceptionDetailsMapperRegistry;
-import ru.boardworld.commons.rest.exception.mapper.impl.*;
-import ru.boardworld.commons.rest.exception.model.ApiError;
-import ru.boardworld.commons.rest.exception.model.ApiErrorDetails;
-import ru.boardworld.commons.rest.exception.model.CommonErrorCode;
-import ru.boardworld.commons.rest.exception.model.ErrorCode;
-import ru.boardworld.commons.rest.exception.model.details.EmptyDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +14,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import ru.boardworld.commons.rest.exception.exception.AbstractApiException;
+import ru.boardworld.commons.rest.exception.logger.ApiErrorLogger;
+import ru.boardworld.commons.rest.exception.mapper.ExceptionDetailsMapperRegistry;
+import ru.boardworld.commons.rest.exception.mapper.impl.*;
+import ru.boardworld.commons.rest.exception.model.ApiError;
+import ru.boardworld.commons.rest.exception.model.ApiErrorDetails;
+import ru.boardworld.commons.rest.exception.model.CommonErrorCode;
+import ru.boardworld.commons.rest.exception.model.ErrorCode;
+import ru.boardworld.commons.rest.exception.model.details.EmptyDetails;
+import ru.boardworld.commons.rest.openfeign.InternalFeignException;
 
 @Slf4j
 @ControllerAdvice
@@ -32,6 +33,13 @@ public class GlobalExceptionHandler {
     private final ApiErrorFactory apiErrorFactory;
     private final ApiErrorLogger apiErrorLogger;
     private final ExceptionDetailsMapperRegistry detailsMapperRegistry;
+
+    @ExceptionHandler(InternalFeignException.class) // Ловим наше новое исключение
+    public ResponseEntity<ApiError> handleServiceApi(InternalFeignException ex, HttpServletRequest request) {
+        ApiError apiError = ex.getApiError();
+        logException(apiError, ex, request);
+        return new ResponseEntity<>(apiError, apiError.getCode().getHttpStatus());
+    }
 
     @ExceptionHandler(AbstractApiException.class)
     private ResponseEntity<ApiError> handleApiException(AbstractApiException ex, HttpServletRequest request) {
@@ -118,6 +126,7 @@ public class GlobalExceptionHandler {
         logException(apiError, ex, request);
         return new ResponseEntity<>(apiError, CommonErrorCode.VALIDATION_FAILED.getHttpStatus());
     }
+
 
     /**
      * --- 405: Method not supported ---

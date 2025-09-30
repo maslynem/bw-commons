@@ -1,10 +1,14 @@
-version = '1.0.4-SNAPSHOT'
+version = '1.0.5-SNAPSHOT'
 
 
 dependencies {
+    api platform('org.springframework.cloud:spring-cloud-dependencies:2024.0.2')
+    api 'org.springframework.cloud:spring-cloud-starter-openfeign'
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-validation'
     api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2'
+    api 'org.jetbrains.kotlin:kotlin-reflect'
 
     api project(':utils-starter')
 
